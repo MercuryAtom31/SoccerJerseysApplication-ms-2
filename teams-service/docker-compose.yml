@@ -1,0 +1,203 @@
+#services:
+#  #  api-gateway:
+#  #    build: api-gateway
+#  #    hostname: api-gateway
+#  #    ports:
+#  #      - "8080:8080"
+#  #    environment:
+#  #      - SPRING_PROFILES_ACTIVE=docker
+#  #    depends_on:
+#  #      - playersteamss-service
+#  #      - employees-service
+#  #      - jerseys-service
+#  #      - purchases-service
+##Teams Service: http://localhost:7003
+#  teams-service:
+#    build: .
+#    hostname: teams-service
+#    container_name: teams-service
+#    ports:
+#      - "7003:7003"
+#    environment:
+#      - SPRING_PROFILES_ACTIVE=docker
+#    depends_on:
+#      mongodb:
+#        condition: service_healthy
+##MongoDB: mongodb://localhost:27017
+#  mongodb:
+#    image: mongo
+#    container_name: mongo_db
+#    ports:
+#      - 27017:27017
+#    volumes:
+#      - mongo:/data
+#    environment:
+#      - MONGO_INITDB_ROOT_USERNAME=user
+#      - MONGO_INITDB_ROOT_PASSWORD=pwd
+#
+#  #  employees-service:
+#  #    build: employees-service
+#  #    hostname: employees-service
+#  #    ports:
+#  #      - "8081:8080"
+#  #    environment:
+#  #      - SPRING_PROFILES_ACTIVE=docker
+#  #    depends_on:
+#  #      mysql2:
+#  #        condition: service_healthy
+#
+##  jerseys-service:
+##    build: jerseys-service
+##    hostname: jerseys-service
+##    container_name: jerseys-service
+##    ports:
+##      - "7002:7002"
+##    environment:
+##      - SPRING_PROFILES_ACTIVE=docker
+##    depends_on:
+##      postgresql1:
+##        condition: service_healthy
+#
+#  #  purchases-service:
+#  #    build: purchases-service
+#  #    hostname: purchases-service
+#  #    ports:
+#  #      - "8083:8080"
+#  #    environment:
+#  #      - SPRING_PROFILES_ACTIVE=docker
+#  #    depends_on:
+#  #      mysql4:
+#  #        condition: service_healthy
+#
+##  mysql3:
+##    image: mysql:5.7
+##    ports:
+##      - "3307:3306"
+##    environment:
+##      - MYSQL_ROOT_PASSWORD=rootpwd
+##      - MYSQL_DATABASE=customers-db
+##      - MYSQL_USER=user
+##      - MYSQL_PASSWORD=pwd
+##    volumes:
+##      - ./data/mysql3:/var/lib/mysql3
+##      - ./data/init.d:/docker-entrypoint-initdb.d
+##    healthcheck:
+##      test:
+##        [
+##          "CMD",
+##          "mysqladmin",
+##          "ping",
+##          "-uuser",
+##          "-ppwd",
+##          "-h",
+##          "localhost",
+##        ]
+##      interval: 10s
+##      timeout: 5s
+##      retries: 10
+#  #
+#  #  mysql2:
+#  #    image: mysql:5.7
+#  #    ports:
+#  #      - "3308:3306"
+#  #    environment:
+#  #      - MYSQL_ROOT_PASSWORD=rootpwd
+#  #      - MYSQL_DATABASE=employees-db
+#  #      - MYSQL_USER=user
+#  #      - MYSQL_PASSWORD=pwd
+#  #    volumes:
+#  #      - ./data/mysql2:/var/lib/mysql2
+#  #      - ./data/init.d:/docker-entrypoint-initdb.d
+#  #    healthcheck:
+#  #      test:
+#  #        [
+#  #          "CMD",
+#  #          "mysqladmin",
+#  #          "ping",
+#  #          "-uuser",
+#  #          "-ppwd",
+#  #          "-h",
+#  #          "localhost",
+#  #        ]
+#  #      interval: 10s
+#  #      timeout: 5s
+#  #      retries: 10
+#
+##  postgresql1:
+##    image: postgres:latest
+##    ports:
+##      - "5432:5432"
+##    environment:
+##      - POSTGRES_DB=jerseys-db
+##      - PGUSER=user
+##      - POSTGRES_USER=user
+##      - POSTGRES_PASSWORD=pwd
+##    healthcheck:
+##      test: "pg_isready -h postgresql1"
+##      interval: 10s
+##      timeout: 5s
+##      retries: 10
+#
+##  pgadmin1:
+##    image: dpage/pgadmin4:latest
+##    container_name: pgadmin1
+##    restart: always
+##    ports:
+##      - "5050:80"
+##    environment:
+##      - PGADMIN_DEFAULT_EMAIL=admin@nneji.com
+##      - PGADMIN_DEFAULT_PASSWORD=admin
+##    depends_on:
+##      - postgresql1
+#
+#  #  mysql4:
+#  #    image: mysql:5.7
+#  #    ports:
+#  #      - "3310:3306"
+#  #    environment:
+#  #      - MYSQL_ROOT_PASSWORD=rootpwd
+#  #      - MYSQL_DATABASE=purchases-db
+#  #      - MYSQL_USER=user
+#  #      - MYSQL_PASSWORD=pwd
+#  #    volumes:
+#  #      - ./data/mysql4:/var/lib/mysql4
+#  #      - ./data/init.d:/docker-entrypoint-initdb.d
+#  #    healthcheck:
+#  #      test:
+#  #        [
+#  #          "CMD",
+#  #          "mysqladmin",
+#  #          "ping",
+#  #          "-uuser",
+#  #          "-ppwd",
+#  #          "-h",
+#  #          "localhost",
+#  #        ]
+#  #      interval: 10s
+#  #      timeout: 5s
+#  #      retries: 10
+#
+##  phpmyadmin1:
+##    image: phpmyadmin:5.2.0
+##    container_name: phpmyadmin1
+##    links:
+##      - mysql3
+##    restart: always
+##    ports:
+##      - 5013:80
+##    environment:
+##      - PMA_ARBITRARY=1
+#
+##  phpmyadmin2:
+##    image: phpmyadmin:5.2.0
+##    container_name: phpmyadmin2
+##    links:
+##      - mysql2
+##    restart: always
+##    ports:
+##      - 5014:80
+##    environment:
+##      - PMA_ARBITRARY=1
+#
+#volumes:
+#  mongo: {}

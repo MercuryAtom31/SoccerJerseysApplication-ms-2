@@ -1,0 +1,6 @@
+include 'api-gateway'
+include 'customers-service'
+include 'jerseys-service'
+include 'orders-service'
+include 'teams-service'
+

@@ -1,0 +1,60 @@
+# Default Spring Profile
+server:
+   error:
+    include-message: always
+
+logging:
+  level:
+    root: INFO
+    com.soccerplayersteamsapplication: DEBUG
+    org.springframework.data.mongodb.core.MongoTemplate: DEBUG
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: test
+
+  data:
+    mongodb:
+      username: user
+      password: pwd
+      host: localhost
+      port: 0
+      database: teams-db
+      authentication-database: admin
+      auto-index-creation: true
+de:
+  flapdoodle:
+    mongodb:
+      embedded:
+        version: 5.0.5
+
+
+
+---
+
+# for docker
+
+
+spring:
+  config:
+    activate:
+      on-profile: docker
+
+#spring.data.mongodb.host: mongodb
+#spring.data.mongodb.port: 27017
+
+  data:
+    mongodb:
+      username: user
+      password: pwd
+      host: mongodb
+      port: 27017
+      database: teams-db
+      authentication-database: admin
+      auto-index-creation: true
+
+server.port: 8080
+

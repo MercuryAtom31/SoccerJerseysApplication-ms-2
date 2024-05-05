@@ -1,0 +1,17 @@
+@startuml C4_Container_Diagram
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+LAYOUT_WITH_LEGEND()
+
+Person(admin, "System Administrator", "Manages teams, jerseys, and players.")
+Person(customer, "Customer", "Browses and purchases soccer jerseys.")
+System(soccerJerseys, "SoccerJerseys Application", "A system for managing and purchasing soccer jerseys.")
+
+System_Ext(paymentGateway, "Payment Gateway", "External service for processing payments.")
+
+Rel(admin, soccerJerseys, "Uses")
+Rel(customer, soccerJerseys, "Uses")
+Rel(soccerJerseys, paymentGateway, "Interacts with")
+
+SHOW_LEGEND()
+@enduml

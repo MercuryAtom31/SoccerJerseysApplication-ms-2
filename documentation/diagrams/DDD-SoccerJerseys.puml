@@ -1,0 +1,120 @@
+@startuml
+hide circle
+top to bottom direction
+scale 0.5
+!define ENTITY(entityName) class entityName << Entity >>
+!define AGGREGATE(aggregateName) class aggregateName << Aggregate >>
+!define AGGREGATE_ROOT(aggregateRootName) class aggregateRootName << Aggregate Root >>
+!define AGGREGATE_ROOT_ENTITY(aggregateRootEntityName) class aggregateRootEntityName << Aggregate Root >> << Entity >>
+!define VALUE_OBJECT(valueObjectName) class valueObjectName << Value Object >>
+!pragma useVerticalIf on
+skinparam dpi 150
+skinparam packageStyle rectangle
+skinparam rectangle{
+  BackgroundColor #f7f4eb
+  BorderColor Black
+}
+
+rectangle "Soccer Jerseys Management System" as BoundedContextSports #line.dashed{
+
+    Package "Order Processing Microservice" <<Rectangle>> #FFCDD2{
+        AGGREGATE_ROOT_ENTITY(Order) #lightpink{
+            date: DateTime
+            status: String
+        }
+        VALUE_OBJECT(OrderIdentifier) #Bisque{
+            orderId: UUID
+        }
+        Order --> OrderIdentifier
+    }
+
+    Package "Jerseys Inventory Microservice" <<Rectangle>> #FFCDD2{
+        AGGREGATE_ROOT_ENTITY(Jersey) #lightpink{
+            size: String
+            color: String
+            quantity: Integer
+            price: Decimal
+        }
+        VALUE_OBJECT(JerseyIdentifier) #Bisque{
+            jerseyId: UUID
+        }
+        Jersey --> JerseyIdentifier
+    }
+
+    Package "Player Teams Microservice" <<Rectangle>> #FFCDD2{
+        AGGREGATE_ROOT_ENTITY(Team) #lightpink{
+            name: String
+            country: String
+            sport: String
+        }
+        VALUE_OBJECT(TeamIdentifier) #Bisque{
+            teamId: UUID
+        }
+
+        AGGREGATE_ROOT_ENTITY(Player) #lightpink{
+            firstName: String
+            lastName: String
+            age: Integer
+            position: String
+        }
+        VALUE_OBJECT(PlayerIdentifier) #Bisque{
+            playerId: UUID
+        }
+
+        Team --> TeamIdentifier
+        Player --> PlayerIdentifier
+    }
+
+    Package "Customer Relations Microservice" <<Rectangle>> #FFCDD2{
+        AGGREGATE_ROOT_ENTITY(Customer) #lightpink{
+            firstName: String
+            lastName: String
+            email: String
+            contactMethodPreference: String
+        }
+        VALUE_OBJECT(CustomerIdentifier) #Bisque{
+            customerId: UUID
+        }
+        VALUE_OBJECT(CustomerAddress) #Bisque{
+                street: String
+                city: String
+                province: String
+                country: String
+        }
+
+        VALUE_OBJECT(CustomerPhoneNumber) #Bisque{
+            type: String
+            number: String
+        }
+
+        VALUE_OBJECT(Purchases) #Bisque {
+            purchases: list[OrderIdentifier]
+        }
+
+        VALUE_OBJECT(ServiceRequests) #Bisque {
+            serviceRequests: list[ServiceRequestIdentifier]
+        }
+
+        AGGREGATE(CustomerContact) #lightpink {
+            date: DateTime
+            summary: String
+            customerInitiated:Boolean
+            contactStatus: String
+        }
+
+        VALUE_OBJECT(CustomerContactIdentifier) #Bisque {
+            customerContactId: UUID
+        }
+
+        Customer -u-> CustomerIdentifier
+        Customer o-- "0..*" CustomerPhoneNumber
+        Customer o--> "1" CustomerAddress
+        Customer o-- "0..*" CustomerContact
+        Customer o-- Purchases
+        Customer o-- ServiceRequests
+        CustomerContact --> CustomerContactIdentifier
+        CustomerContact o-> OrderIdentifier
+        CustomerContact o-> CustomerIdentifier
+    }
+}
+@enduml
