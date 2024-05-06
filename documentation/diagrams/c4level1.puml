@@ -1,17 +1,34 @@
-@startuml C4_Container_Diagram
-!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+@startuml
+!includeurl https://raw.githubusercontent.com/RicardoNiepel/C4-PlantUML/master/C4_Context.puml
 
-LAYOUT_WITH_LEGEND()
+title System Context Diagram for Soccer Jerseys Ordering System
 
-Person(admin, "System Administrator", "Manages teams, jerseys, and players.")
-Person(customer, "Customer", "Browses and purchases soccer jerseys.")
-System(soccerJerseys, "SoccerJerseys Application", "A system for managing and purchasing soccer jerseys.")
+Person(customer, "Customer", "A customer looking to purchase soccer jerseys")
+Person(employee, "Employee", "Employee managing the jersey orders and inventory")
+System(orders_system, "Soccer Jerseys Ordering System", "Allows customers to order soccer jerseys and employees to manage the orders and inventory")
 
-System_Ext(paymentGateway, "Payment Gateway", "External service for processing payments.")
-
-Rel(admin, soccerJerseys, "Uses")
-Rel(customer, soccerJerseys, "Uses")
-Rel(soccerJerseys, paymentGateway, "Interacts with")
+Rel(customer, orders_system, "Places orders using", "Web interface/API")
+Rel(employee, orders_system, "Manages orders and inventory", "Web interface/API")
 
 SHOW_LEGEND()
 @enduml
+
+
+
+'@startuml C4_Container_Diagram
+'!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+'
+'LAYOUT_WITH_LEGEND()
+'
+'Person(admin, "System Administrator", "Manages teams, jerseys, and players.")
+'Person(customer, "Customer", "Browses and purchases soccer jerseys.")
+'System(soccerJerseys, "SoccerJerseys Application", "A system for managing and purchasing soccer jerseys.")
+'
+'System_Ext(paymentGateway, "Payment Gateway", "External service for processing payments.")
+'
+'Rel(admin, soccerJerseys, "Uses")
+'Rel(customer, soccerJerseys, "Uses")
+'Rel(soccerJerseys, paymentGateway, "Interacts with")
+'
+'SHOW_LEGEND()
+'@enduml

@@ -17,7 +17,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 @ActiveProfiles("h2")
-@DataJpaTest
+//@DataJpaTest
 public class JerseyControllerIntegrationTest {
 
     private final String BASE_URI_JERSEYS = "/api/v1/jerseys";

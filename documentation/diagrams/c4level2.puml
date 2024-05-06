@@ -1,43 +1,89 @@
-@startuml C4_Container_Diagram
-!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+@startuml
+!includeurl https://raw.githubusercontent.com/RicardoNiepel/C4-PlantUML/master/C4_Container.puml
 
-LAYOUT_WITH_LEGEND()
+!define DEVICONS https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/devicons
+!define FONTAWESOME https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/font-awesome-5
 
-Person(user, "User", "Interacts with the Soccer Jerseys Management System.")
-Person(admin, "Administrator", "Manages the system.")
+!include FONTAWESOME/users.puml
 
-System_Boundary(sjms, "Soccer Jerseys Management System") {
+LAYOUT_TOP_DOWN()
+SHOW_PERSON_OUTLINE()
 
-    Container(customersService, "Customers Service", "Spring Boot Application", "Manages customer relationships.")
-    ContainerDb(customersDb, "MySQL Database", "MySQL", "Stores customer information.")
+title Container Diagram for Soccer Jerseys Ordering System
 
-    Container(jerseysService, "Jerseys Service", "Spring Boot Application", "Manages jersey inventory.")
-    ContainerDb(jerseysDb, "MySQL Database", "MySQL", "Stores jersey stock data.")
+Person(customer, "Customer", "A customer looking to purchase soccer jerseys")
+Person(employee, "Employee", "Employee managing the jersey orders and inventory")
+System_Boundary(sjs, "Soccer Jerseys Ordering System") {
+    ContainerDb(jerseys_db, "Jersey Database", "MySQL", "Stores jersey inventory data")
+    ContainerDb(teams_db, "Team Database", "MySQL", "Stores team data")
+    ContainerDb(customers_db, "Customer Database", "MySQL", "Stores customer data")
+    ContainerDb(orders_db, "Order Database", "MySQL", "Stores order data")
 
-    Container(playerTeamsService, "Player Teams Service", "Spring Boot Application", "Manages player and team information.")
-    ContainerDb(playerTeamsDb, "MySQL Database", "MySQL", "Stores player and team data.")
+    Container(jerseys_service, "Jerseys Service", "Spring Boot Application", "Manages jersey data and inventory")
+    Container(teams_service, "Teams Service", "Spring Boot Application", "Manages team information")
+    Container(customers_service, "Customers Service", "Spring Boot Application", "Manages customer information")
+    Container(orders_service, "Orders Service", "Spring Boot Application", "Processes and manages orders", $tags="microService")
 
-    Container(orderService, "Order Processing Service", "Spring Boot Application", "Processes orders.")
-    ContainerDb(orderDb, "MySQL Database", "MySQL", "Stores order data.")
+    Rel(customer, orders_service, "Places orders using", "HTTP/JSON")
+    Rel(employee, orders_service, "Manages orders and interacts with", "HTTP/JSON")
+    Rel(orders_service, jerseys_service, "Validates jersey availability with", "HTTP/JSON")
+    Rel(orders_service, teams_service, "Fetches team details with", "HTTP/JSON")
+    Rel(orders_service, customers_service, "Verifies customer details with", "HTTP/JSON")
 
-    ContainerDb(phpmyadmin, "PHPMyAdmin", "Database Management Tool", "Manages MySQL databases.")
-
-    Rel(user, customersService, "Uses", "HTTPS")
-    Rel(user, jerseysService, "Uses", "HTTPS")
-    Rel(user, playerTeamsService, "Uses", "HTTPS")
-    Rel(user, orderService, "Uses", "HTTPS")
-
-    Rel(customersService, customersDb, "Reads/Writes to")
-    Rel(jerseysService, jerseysDb, "Reads/Writes to")
-    Rel(playerTeamsService, playerTeamsDb, "Reads/Writes to")
-    Rel(orderService, orderDb, "Reads/Writes to")
-
-    Rel(admin, phpmyadmin, "Manages", "HTTP")
-    Rel(phpmyadmin, customersDb, "Interfaces with")
-    Rel(phpmyadmin, jerseysDb, "Interfaces with")
-    Rel(phpmyadmin, playerTeamsDb, "Interfaces with")
-    Rel(phpmyadmin, orderDb, "Interfaces with")
+    Rel(jerseys_service, jerseys_db, "Reads from and writes to", "JDBC")
+    Rel(teams_service, teams_db, "Reads from and writes to", "JDBC")
+    Rel(customers_service, customers_db, "Reads from and writes to", "JDBC")
+    Rel(orders_service, orders_db, "Reads from and writes to", "JDBC")
 }
 
-SHOW_LEGEND()
 @enduml
+
+
+
+
+
+
+
+'@startuml C4_Container_Diagram
+'!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+'
+'LAYOUT_WITH_LEGEND()
+'
+'Person(user, "User", "Interacts with the Soccer Jerseys Management System.")
+'Person(admin, "Administrator", "Manages the system.")
+'
+'System_Boundary(sjms, "Soccer Jerseys Management System") {
+'
+'    Container(customersService, "Customers Service", "Spring Boot Application", "Manages customer relationships.")
+'    ContainerDb(customersDb, "MySQL Database", "MySQL", "Stores customer information.")
+'
+'    Container(jerseysService, "Jerseys Service", "Spring Boot Application", "Manages jersey inventory.")
+'    ContainerDb(jerseysDb, "MySQL Database", "MySQL", "Stores jersey stock data.")
+'
+'    Container(playerTeamsService, "Player Teams Service", "Spring Boot Application", "Manages player and team information.")
+'    ContainerDb(playerTeamsDb, "MySQL Database", "MySQL", "Stores player and team data.")
+'
+'    Container(orderService, "Order Processing Service", "Spring Boot Application", "Processes orders.")
+'    ContainerDb(orderDb, "MySQL Database", "MySQL", "Stores order data.")
+'
+'    ContainerDb(phpmyadmin, "PHPMyAdmin", "Database Management Tool", "Manages MySQL databases.")
+'
+'    Rel(user, customersService, "Uses", "HTTPS")
+'    Rel(user, jerseysService, "Uses", "HTTPS")
+'    Rel(user, playerTeamsService, "Uses", "HTTPS")
+'    Rel(user, orderService, "Uses", "HTTPS")
+'
+'    Rel(customersService, customersDb, "Reads/Writes to")
+'    Rel(jerseysService, jerseysDb, "Reads/Writes to")
+'    Rel(playerTeamsService, playerTeamsDb, "Reads/Writes to")
+'    Rel(orderService, orderDb, "Reads/Writes to")
+'
+'    Rel(admin, phpmyadmin, "Manages", "HTTP")
+'    Rel(phpmyadmin, customersDb, "Interfaces with")
+'    Rel(phpmyadmin, jerseysDb, "Interfaces with")
+'    Rel(phpmyadmin, playerTeamsDb, "Interfaces with")
+'    Rel(phpmyadmin, orderDb, "Interfaces with")
+'}
+'
+'SHOW_LEGEND()
+'@enduml

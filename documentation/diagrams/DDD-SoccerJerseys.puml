@@ -1,120 +1,46 @@
 @startuml
-hide circle
-top to bottom direction
-scale 0.5
-!define ENTITY(entityName) class entityName << Entity >>
-!define AGGREGATE(aggregateName) class aggregateName << Aggregate >>
-!define AGGREGATE_ROOT(aggregateRootName) class aggregateRootName << Aggregate Root >>
-!define AGGREGATE_ROOT_ENTITY(aggregateRootEntityName) class aggregateRootEntityName << Aggregate Root >> << Entity >>
-!define VALUE_OBJECT(valueObjectName) class valueObjectName << Value Object >>
-!pragma useVerticalIf on
-skinparam dpi 150
-skinparam packageStyle rectangle
-skinparam rectangle{
-  BackgroundColor #f7f4eb
-  BorderColor Black
-}
 
-rectangle "Soccer Jerseys Management System" as BoundedContextSports #line.dashed{
-
-    Package "Order Processing Microservice" <<Rectangle>> #FFCDD2{
-        AGGREGATE_ROOT_ENTITY(Order) #lightpink{
-            date: DateTime
-            status: String
+package "Soccer Jerseys Microservices Application" {
+    package "jerseys-service" #LightPink{
+        [JerseyService] #LightGreen
+        database "Jersey Repository" #Beige{
+            [Jersey]
         }
-        VALUE_OBJECT(OrderIdentifier) #Bisque{
-            orderId: UUID
-        }
-        Order --> OrderIdentifier
+        [Jersey] --> [JerseyIdentifier : Value Object]
     }
 
-    Package "Jerseys Inventory Microservice" <<Rectangle>> #FFCDD2{
-        AGGREGATE_ROOT_ENTITY(Jersey) #lightpink{
-            size: String
-            color: String
-            quantity: Integer
-            price: Decimal
+    package "teams-service" {
+        [TeamService] #LightGreen
+        database "Team Repository" #Beige {
+            [Team]
         }
-        VALUE_OBJECT(JerseyIdentifier) #Bisque{
-            jerseyId: UUID
-        }
-        Jersey --> JerseyIdentifier
+        [Team] --> [TeamIdentifier : Value Object]
     }
 
-    Package "Player Teams Microservice" <<Rectangle>> #FFCDD2{
-        AGGREGATE_ROOT_ENTITY(Team) #lightpink{
-            name: String
-            country: String
-            sport: String
+    package "customers-service" {
+        [CustomerService] #LightGreen
+        database "Customer Repository" #Beige {
+            [Customer]
         }
-        VALUE_OBJECT(TeamIdentifier) #Bisque{
-            teamId: UUID
-        }
-
-        AGGREGATE_ROOT_ENTITY(Player) #lightpink{
-            firstName: String
-            lastName: String
-            age: Integer
-            position: String
-        }
-        VALUE_OBJECT(PlayerIdentifier) #Bisque{
-            playerId: UUID
-        }
-
-        Team --> TeamIdentifier
-        Player --> PlayerIdentifier
+        [Customer] --> [CustomerIdentifier : Value Object]
     }
 
-    Package "Customer Relations Microservice" <<Rectangle>> #FFCDD2{
-        AGGREGATE_ROOT_ENTITY(Customer) #lightpink{
-            firstName: String
-            lastName: String
-            email: String
-            contactMethodPreference: String
+    package "orders-service" #LightBlue {
+        [OrderService] #LightGreen
+        database "Order Repository" #Beige {
+            [Order]
         }
-        VALUE_OBJECT(CustomerIdentifier) #Bisque{
-            customerId: UUID
-        }
-        VALUE_OBJECT(CustomerAddress) #Bisque{
-                street: String
-                city: String
-                province: String
-                country: String
-        }
-
-        VALUE_OBJECT(CustomerPhoneNumber) #Bisque{
-            type: String
-            number: String
-        }
-
-        VALUE_OBJECT(Purchases) #Bisque {
-            purchases: list[OrderIdentifier]
-        }
-
-        VALUE_OBJECT(ServiceRequests) #Bisque {
-            serviceRequests: list[ServiceRequestIdentifier]
-        }
-
-        AGGREGATE(CustomerContact) #lightpink {
-            date: DateTime
-            summary: String
-            customerInitiated:Boolean
-            contactStatus: String
-        }
-
-        VALUE_OBJECT(CustomerContactIdentifier) #Bisque {
-            customerContactId: UUID
-        }
-
-        Customer -u-> CustomerIdentifier
-        Customer o-- "0..*" CustomerPhoneNumber
-        Customer o--> "1" CustomerAddress
-        Customer o-- "0..*" CustomerContact
-        Customer o-- Purchases
-        Customer o-- ServiceRequests
-        CustomerContact --> CustomerContactIdentifier
-        CustomerContact o-> OrderIdentifier
-        CustomerContact o-> CustomerIdentifier
+        [Order] --> [OrderIdentifier : Value Object]
+        [Order] --> [JerseyIdentifier : Value Object]
+        [Order] --> [TeamIdentifier : Value Object]
     }
 }
+
+note "Invariant: When an order is created and a jersey is requested, the inventory of the jersey must be checked and decremented accordingly. If the jersey's quantity is less than the requested amount, an ItemUnavailableException is thrown indicating insufficient stock." as Invariant1
+[OrderService] .. Invariant1
+
+[OrderService] ..> [JerseyService] : validates inventory\nusing
+[OrderService] ..> [TeamService] : fetches team details\nusing
+[OrderService] ..> [CustomerService] : confirms customer\nusing
+
 @enduml
