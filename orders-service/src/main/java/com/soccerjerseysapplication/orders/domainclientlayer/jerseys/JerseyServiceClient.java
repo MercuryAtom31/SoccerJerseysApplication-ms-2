@@ -41,6 +41,12 @@ public class JerseyServiceClient {
 
     }
 
+    public void updateJerseyQuantity(String jerseyId, int quantityChange) {
+        String url = JERSEY_SERVICE_BASE_URL + "/adjust-stock/" + jerseyId;
+        restTemplate.postForObject(url, quantityChange, Void.class);
+    }
+
+
     public String getErrorMessage(HttpClientErrorException ex) {
         try{
             return objectMapper.readValue(ex.getResponseBodyAsString(), HttpErrorInfo.class).getMessage();

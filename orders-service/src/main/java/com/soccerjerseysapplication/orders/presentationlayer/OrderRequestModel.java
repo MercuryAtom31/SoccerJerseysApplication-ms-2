@@ -16,4 +16,5 @@ import java.util.List;
 public class OrderRequestModel {
     String teamIdentifier;
     String jerseyIdentifier;
+    private int quantity;  // User-defined quantity for the order
 }

@@ -17,6 +17,7 @@ public interface OrderRequestMapper {
     @Mapping(target = "customerIdentifier", ignore = true)
     @Mapping(target = "totalPriceOrder", source = "orderRequestModel.jerseyIdentifier")
     @Mapping(target = "teamIdentifier", source = "orderRequestModel.teamIdentifier")
+    @Mapping(target = "quantity", source = "orderRequestModel.quantity")
     Order requestModelToEntity(OrderRequestModel orderRequestModel, OrderIdentifier orderIdentifier);
 
     /**

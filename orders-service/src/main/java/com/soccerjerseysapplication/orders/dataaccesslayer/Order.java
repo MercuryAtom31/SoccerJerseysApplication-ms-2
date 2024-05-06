@@ -27,6 +27,7 @@ public class Order {
     private JerseyIdentifier jerseyIdentifier;
     @Embedded
     private TeamIdentifier teamIdentifier;
-    private String orderDate;//
-    private double totalPriceOrder;//
+    private String orderDate;
+    private double totalPriceOrder;
+    private int quantity;  // User-defined quantity for the order
 }

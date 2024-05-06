@@ -111,38 +111,79 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderResponseModel createCustomerOrder(String customerId, OrderRequestModel orderRequestModel) {
 
-        //Verify customer exists
+        // Verify customer exists
         CustomerResponseModel foundCustomer = customerServiceClient.getCustomerByCustomerId(customerId);
         if (foundCustomer == null) {
             throw new NotFoundException("CustomerId provided is invalid: " + customerId);
         }
 
-        //Verify jersey exists
+        // Verify jersey exists
         JerseyResponseModel foundJersey = jerseyServiceClient.getJerseyById(orderRequestModel.getJerseyIdentifier());
         if (foundJersey == null) {
             throw new NotFoundException("JerseyId provided is invalid: " + orderRequestModel.getJerseyIdentifier());
         }
 
-        TeamResponseModel teamResponseModel = teamServiceClient.getTeamById(orderRequestModel.getTeamIdentifier());
-
-        TeamResponseModel foundTeam = teamServiceClient.getTeamById(teamResponseModel.getTeamId());
+        // Verify team exists
+        TeamResponseModel foundTeam = teamServiceClient.getTeamById(orderRequestModel.getTeamIdentifier());
         if (foundTeam == null) {
-            throw new NotFoundException("TeamId is invalid: " + teamResponseModel.getTeamId());
-        }
-        /*
-        My aggregate invariant must be here?
-        */
-        //Verify that jersey is not already out of stock.
-        if (foundJersey.getQuantity() <= 0) {
-            throw new ItemUnavailableException("Jersey with jerseyIdentifier: " + orderRequestModel.getJerseyIdentifier() + " is currently unavailable.");
+            throw new NotFoundException("TeamId is invalid: " + orderRequestModel.getTeamIdentifier());
         }
 
-        //convert request model to entity
+        // Retrieve the quantity requested by the user
+        int quantityRequested = orderRequestModel.getQuantity();
+        if (foundJersey.getQuantity() < quantityRequested) {
+            throw new ItemUnavailableException("Insufficient stock for Jersey ID: " + orderRequestModel.getJerseyIdentifier() +
+                    ", Available: " + foundJersey.getQuantity() +
+                    ", Requested: " + quantityRequested);
+        }
+
+        // Update jersey stock
+        jerseyServiceClient.updateJerseyQuantity(foundJersey.getJerseyId(), -quantityRequested);
+
+        // Convert request model to entity and save
         Order order = orderRequestMapper.requestModelToEntity(orderRequestModel, new OrderIdentifier());
+        Order savedOrder = orderRepository.save(order);
 
-        //convert entity to response model
-        return orderResponseMapper.orderAndDetailsToOrderResponseModel(order, foundCustomer, foundJersey, foundTeam);
+        // Convert entity to response model
+        return orderResponseMapper.orderAndDetailsToOrderResponseModel(savedOrder, foundCustomer, foundJersey, foundTeam);
     }
+
+
+//    @Override
+//    public OrderResponseModel createCustomerOrder(String customerId, OrderRequestModel orderRequestModel) {
+//
+//        //Verify customer exists
+//        CustomerResponseModel foundCustomer = customerServiceClient.getCustomerByCustomerId(customerId);
+//        if (foundCustomer == null) {
+//            throw new NotFoundException("CustomerId provided is invalid: " + customerId);
+//        }
+//
+//        //Verify jersey exists
+//        JerseyResponseModel foundJersey = jerseyServiceClient.getJerseyById(orderRequestModel.getJerseyIdentifier());
+//        if (foundJersey == null) {
+//            throw new NotFoundException("JerseyId provided is invalid: " + orderRequestModel.getJerseyIdentifier());
+//        }
+//
+//        TeamResponseModel teamResponseModel = teamServiceClient.getTeamById(orderRequestModel.getTeamIdentifier());
+//
+//        TeamResponseModel foundTeam = teamServiceClient.getTeamById(teamResponseModel.getTeamId());
+//        if (foundTeam == null) {
+//            throw new NotFoundException("TeamId is invalid: " + teamResponseModel.getTeamId());
+//        }
+//        /*
+//        My aggregate invariant must be here?
+//        */
+//        //Verify that jersey is not already out of stock.
+//        if (foundJersey.getQuantity() <= 0) {
+//            throw new ItemUnavailableException("Jersey with jerseyIdentifier: " + orderRequestModel.getJerseyIdentifier() + " is currently unavailable.");
+//        }
+//
+//        //convert request model to entity
+//        Order order = orderRequestMapper.requestModelToEntity(orderRequestModel, new OrderIdentifier());
+//
+//        //convert entity to response model
+//        return orderResponseMapper.orderAndDetailsToOrderResponseModel(order, foundCustomer, foundJersey, foundTeam);
+//    }
 
     @Override
     public OrderResponseModel updateCustomerOrder(String customerId, String orderId, OrderRequestModel orderRequestModel) {
