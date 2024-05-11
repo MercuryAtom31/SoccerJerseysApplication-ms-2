@@ -23,13 +23,15 @@ public interface OrderResponseMapper {
     @AfterMapping
     default void addLinks(@MappingTarget OrderResponseModel orderResponseModel) {
         // orderLink
+        String orderId = orderResponseModel.getOrderIdentifier();
+        String customerId  = orderResponseModel.getCustomerIdentifier();
         Link selfLink = linkTo(methodOn(OrderController.class)
-                .getOrderByOrderId(orderResponseModel.getOrderIdentifier()))
+                .getCustomerOrderByOrderId(customerId, orderId))
                 .withSelfRel();
         orderResponseModel.add(selfLink);
 
         Link allLink = linkTo(methodOn(OrderController.class)
-                .getAllOrders())
+                .getAllOrdersForCustomer(customerId))
                 .withRel("all orders");
         orderResponseModel.add(allLink);
     }

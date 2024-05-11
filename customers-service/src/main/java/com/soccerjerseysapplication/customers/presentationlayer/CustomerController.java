@@ -31,6 +31,8 @@ public class CustomerController {
 
     @PostMapping()
     public ResponseEntity<CustomerResponseModel> addCustomer(@RequestBody CustomerRequestModel customerRequestModel) {
+
+        log.debug("Received addCustomer for CustomerController: " +customerRequestModel.toString());
         return ResponseEntity.status(HttpStatus.CREATED).body(customerService.addCustomer(customerRequestModel));
     }
 

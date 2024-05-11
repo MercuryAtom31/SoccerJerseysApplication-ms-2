@@ -40,6 +40,7 @@ public class CustomerServiceClient {
     public List<CustomerResponseModel> getAllCustomers() {
         try {
             String url = CUSTOMER_SERVICE_BASE_URL;
+            log.debug("Sending getAllCustomers using url: " + url);
 
             CustomerResponseModel[] customerResponseModel = restTemplate.getForObject(url, CustomerResponseModel[].class);
 
@@ -53,9 +54,12 @@ public class CustomerServiceClient {
     public CustomerResponseModel getCustomerByCustomerId(String customerId) {
         try {
             String url = CUSTOMER_SERVICE_BASE_URL + "/" + customerId;
+            log.debug("Sending getCustomerByCustomerId using url: " + url);
+            log.debug("for CustomerId: " + customerId);
 
             CustomerResponseModel customerResponseModel = restTemplate.getForObject(url, CustomerResponseModel.class);
 
+            log.debug("Received CustomerResponseModel: " +customerResponseModel.toString());
             return customerResponseModel;
         }
         catch (HttpClientErrorException ex) {
@@ -67,8 +71,11 @@ public class CustomerServiceClient {
         try {
             String url = CUSTOMER_SERVICE_BASE_URL;
 
+            log.debug("Sending createCustomer using url: " + url);
+
             CustomerResponseModel customerResponseModel = restTemplate.postForObject(url, customerRequestModel, CustomerResponseModel.class);
 
+            log.debug("Received CustomerResponseModel: " +customerResponseModel.toString());
             return customerResponseModel;
         }
         catch (HttpClientErrorException ex) {

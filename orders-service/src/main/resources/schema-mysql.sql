@@ -5,7 +5,8 @@ CREATE TABLE IF NOT EXISTS orders (
     jersey_id VARCHAR(50),
     team_id VARCHAR(50),
     order_date  VARCHAR(30),
-    total_price_order DOUBLE
+    total_price_order DOUBLE,
+    quantity INT
     );
 
 

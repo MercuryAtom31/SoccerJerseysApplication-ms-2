@@ -65,7 +65,7 @@ public class OrderServiceImpl implements OrderService {
             throw new InvalidInputException("CustomerId provided is invalid: " + customerId);
         }
         List<OrderResponseModel> orderResponseModelList = new ArrayList<>();
-        List<Order> customerOrders = orderRepository.findOrderByCustomerModel_CustomerId(customerId);
+        List<Order> customerOrders = orderRepository.findAllByCustomerIdentifier_CustomerId(customerId);
         //for each of these orders you will get by id each service and save their response model to a variable
         // once you have all 3 response models you will call the mapper method "orderAndDetailsToOrderResponseModel"
         // which will return one OrderResponse Model you will then add that order response model
@@ -88,7 +88,7 @@ public class OrderServiceImpl implements OrderService {
         if (foundCustomer == null) {
             throw new InvalidInputException("CustomerId provided is invalid: " + customerId);
         }
-        Order foundOrder = orderRepository.findOrdersByCustomerModel_CustomerIdAndOrderIdentifier_OrderId(customerId, orderId);
+        Order foundOrder = orderRepository.findOrderByCustomerIdentifier_CustomerIdAndOrderIdentifier_OrderId(customerId, orderId);
         if (foundOrder == null) {
             throw new NotFoundException("OrderId provided is unknown: " + orderId);
         }
@@ -197,7 +197,7 @@ public class OrderServiceImpl implements OrderService {
         //verify that the orderId is valid
         //if not valid, throw NotFoundException
         //else, return the OrderResponseModel
-        Order foundOrder = orderRepository.findOrdersByCustomerModel_CustomerIdAndOrderIdentifier_OrderId(customerId, orderId);
+        Order foundOrder = orderRepository.findOrderByCustomerIdentifier_CustomerIdAndOrderIdentifier_OrderId(customerId, orderId);
         if (foundOrder == null) {
             throw new NotFoundException("OrderId provided is unknown: " + orderId);
         }
@@ -243,7 +243,7 @@ public class OrderServiceImpl implements OrderService {
             throw new NotFoundException("CustomerId provided is invalid: " + customerId);
         }
 
-        Order order = orderRepository.findOrdersByCustomerModel_CustomerIdAndOrderIdentifier_OrderId(customerId, orderId);
+        Order order = orderRepository.findOrderByCustomerIdentifier_CustomerIdAndOrderIdentifier_OrderId(customerId, orderId);
 
         if (order == null) {
             throw new NotFoundException("OrderId provided is unknown: " + orderId);

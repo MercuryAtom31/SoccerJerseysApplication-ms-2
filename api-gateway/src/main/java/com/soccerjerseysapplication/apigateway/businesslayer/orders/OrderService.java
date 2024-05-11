@@ -7,9 +7,9 @@ import java.util.List;
 
 public interface OrderService {
 
-    List<OrderResponseModel> getAllOrders();
-    OrderResponseModel getOrderByOrderId(String orderId);
-    OrderResponseModel createOrder(OrderRequestModel orderRequestModel);
-    OrderResponseModel updateOrder(String orderId, OrderRequestModel orderRequestModel);
-    void deleteOrder(String orderId);
+    List<OrderResponseModel> getAllOrdersForCustomer(String customerId);
+    OrderResponseModel getCustomerOrderByOrderId(String customerId, String orderId);
+    OrderResponseModel createCustomerOrder(String customerId, OrderRequestModel orderRequestModel);
+    OrderResponseModel updateCustomerOrder(String customerId, String orderId, OrderRequestModel orderRequestModel);
+    void deleteCustomerOrder(String customerId, String orderId);
 }

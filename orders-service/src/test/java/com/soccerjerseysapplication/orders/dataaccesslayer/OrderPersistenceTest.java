@@ -37,33 +37,33 @@ public class OrderPersistenceTest {
 
     @Test
     public void findOrderByCustomerId_shouldSucceed() {
-        List<Order> results = orderRepository.findOrderByCustomerModel_CustomerId("customer1");
+        List<Order> results = orderRepository.findAllByCustomerIdentifier_CustomerId("customer1");
         assertFalse(results.isEmpty());
         assertEquals("customer1", results.get(0).getCustomerIdentifier().getCustomerId());
     }
 
     @Test
     public void findOrderByCustomerId_shouldFailWhenNoOrdersExist() {
-        List<Order> results = orderRepository.findOrderByCustomerModel_CustomerId("nonexistent");
+        List<Order> results = orderRepository.findAllByCustomerIdentifier_CustomerId("nonexistent");
         assertTrue(results.isEmpty());
     }
 
     @Test
     public void findOrdersByCustomerModel_CustomerIdAndOrderIdentifier_OrderId_shouldSucceed() {
-        Order foundOrder = orderRepository.findOrdersByCustomerModel_CustomerIdAndOrderIdentifier_OrderId("customer1", order.getOrderIdentifier().getOrderId());
+        Order foundOrder = orderRepository.findOrderByCustomerIdentifier_CustomerIdAndOrderIdentifier_OrderId("customer1", order.getOrderIdentifier().getOrderId());
         assertNotNull(foundOrder);
         assertEquals("customer1", foundOrder.getCustomerIdentifier().getCustomerId());
     }
 
     @Test
     public void findOrdersByCustomerModel_CustomerIdAndOrderIdentifier_OrderId_shouldFailWhenOrderDoesNotExist() {
-        Order foundOrder = orderRepository.findOrdersByCustomerModel_CustomerIdAndOrderIdentifier_OrderId("customer1", "nonexistent");
+        Order foundOrder = orderRepository.findOrderByCustomerIdentifier_CustomerIdAndOrderIdentifier_OrderId("customer1", "nonexistent");
         assertNull(foundOrder);
     }
 
     @Test
     public void deleteOrder_shouldSucceed() {
         orderRepository.delete(order);
-        assertTrue(orderRepository.findOrderByCustomerModel_CustomerId("customer1").isEmpty());
+        assertTrue(orderRepository.findAllByCustomerIdentifier_CustomerId("customer1").isEmpty());
     }
 }

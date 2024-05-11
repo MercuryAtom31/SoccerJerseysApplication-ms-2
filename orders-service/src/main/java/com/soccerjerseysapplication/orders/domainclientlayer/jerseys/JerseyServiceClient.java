@@ -24,8 +24,8 @@ public class JerseyServiceClient {
 
     public JerseyServiceClient(RestTemplate restTemplate,
                                ObjectMapper objectMapper,
-                               @Value("app.jerseys-service.host") String jerseysServiceHost,
-                               @Value("app.jerseys-service.port") String jerseysServicePort) {
+                               @Value("${app.jerseys-service.host}") String jerseysServiceHost,
+                               @Value("${app.jerseys-service.port}") String jerseysServicePort) {
         this.restTemplate = restTemplate;
         this.objectMapper = objectMapper;
         this.JERSEY_SERVICE_BASE_URL = "http://" + jerseysServiceHost + ":" + jerseysServicePort + "/api/v1/jerseys";

@@ -22,7 +22,7 @@ public class DataBaseLoaderService implements CommandLineRunner {
 
         team1.setName("Real Madrid");
         team1.setCountry("Spain");
-        team1.setTeamIdentifier(new TeamIdentifier());
+        team1.setTeamIdentifier(new TeamIdentifier("24"));
 
 
 

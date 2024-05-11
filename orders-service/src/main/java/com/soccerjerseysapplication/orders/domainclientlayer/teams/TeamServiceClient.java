@@ -26,8 +26,8 @@ public class TeamServiceClient {
 
     public TeamServiceClient(RestTemplate restTemplate,
                                  ObjectMapper objectMapper,
-                                 @Value("app.team-service.host") String teamServiceHost,
-                                 @Value("app.team-service.port") String teamServicePort) {
+                                 @Value("${app.teams-service.host}") String teamServiceHost,
+                                 @Value("${app.teams-service.port}") String teamServicePort) {
         this.restTemplate = restTemplate;
         this.objectMapper = objectMapper;
         this.TEAM_SERVICE_BASE_URL = "http://" + teamServiceHost + ":" + teamServicePort + "/api/v1/teams";;

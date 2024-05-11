@@ -1,4 +1,4 @@
-package com.soccerjerseysapplication.customers.utils;
+package com.soccerjerseysapplication.orders.utils.exceptions;
 
 import com.soccerjerseysapplication.customers.utils.exceptions.NotFoundException;
 import com.soccerjerseysapplication.orders.utils.HttpErrorInfo;

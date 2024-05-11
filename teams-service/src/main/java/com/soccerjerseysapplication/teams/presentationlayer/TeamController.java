@@ -42,7 +42,6 @@ public class TeamController {
     public ResponseEntity<TeamResponseModel> addTeam(@PathVariable String teamId, @RequestBody TeamRequestModel teamRequestModel) {
         TeamResponseModel createdTeam = teamService.addTeam(teamRequestModel);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdTeam);
-        //TODO: Fix the mappings for the rest of the endpoints.
     }
 
     @PutMapping("/{teamId}")

@@ -2,7 +2,7 @@ package com.soccerjerseysapplication.orders.businesslayer;
 
 import com.soccerjerseysapplication.orders.businesslayer.OrderService;
 import com.soccerjerseysapplication.orders.dataaccesslayer.Order;
-import com.soccerjerseysapplication.orders.presentationlayer.OrderController;
+import com.soccerjerseysapplication.orders.presentationlayer.CustomerOrderController;
 import com.soccerjerseysapplication.orders.presentationlayer.OrderRequestModel;
 import com.soccerjerseysapplication.orders.presentationlayer.OrderResponseModel;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,7 +24,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @ExtendWith(SpringExtension.class)
-@WebMvcTest(OrderController.class)
+@WebMvcTest(CustomerOrderController.class)
 public class OrderControllerIntegrationTest {
 
     @Autowired

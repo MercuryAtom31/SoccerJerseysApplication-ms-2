@@ -1,6 +1,6 @@
 # Default Spring Profile
 server:
-  port: 7002
+  port: 8080
   error:
     include-message: always
 

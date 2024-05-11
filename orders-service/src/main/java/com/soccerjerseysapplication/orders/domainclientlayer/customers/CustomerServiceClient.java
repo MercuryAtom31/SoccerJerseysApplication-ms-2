@@ -25,8 +25,8 @@ public class CustomerServiceClient {
 
     public CustomerServiceClient(RestTemplate restTemplate,
                                  ObjectMapper objectMapper,
-                                 @Value("app.customers-service.host") String customerServiceHost,
-                                 @Value("app.customer-service.port") String customerServicePort) {
+                                 @Value("${app.customers-service.host}") String customerServiceHost,
+                                 @Value("${app.customers-service.port}") String customerServicePort) {
         this.restTemplate = restTemplate;
         this.objectMapper = objectMapper;
         this.CUSTOMER_SERVICE_BASE_URL = "http://" + customerServiceHost + ":" + customerServicePort + "/api/v1/customers";;

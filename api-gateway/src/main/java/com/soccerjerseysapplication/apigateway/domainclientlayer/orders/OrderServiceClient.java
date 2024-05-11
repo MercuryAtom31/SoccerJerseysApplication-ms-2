@@ -34,12 +34,12 @@ public class OrderServiceClient {
         this.restTemplate = restTemplate;
         this.objectMapper = mapper;
 
-        ORDER_SERVICE_BASE_URL  = "http://" + orderServiceHost + ":" + orderServicePort + "/api/v1/orders";
+        ORDER_SERVICE_BASE_URL  = "http://" + orderServiceHost + ":" + orderServicePort + "/api/v1/customers/";
     }
 
-    public List<OrderResponseModel> getAllOrders() {
+    public List<OrderResponseModel>getAllOrdersForCustomer(String customerId) {
         try {
-            String url = ORDER_SERVICE_BASE_URL;
+            String url = ORDER_SERVICE_BASE_URL + customerId + "/orders";
 
             OrderResponseModel[] orderResponseModel = restTemplate.getForObject(url, OrderResponseModel[].class);
 
@@ -50,7 +50,7 @@ public class OrderServiceClient {
         }
     }
 
-    public OrderResponseModel getOrderByOrderId(String orderId) {
+    public OrderResponseModel getCustomerOrderByOrderId(String customerId, String orderId) {
         try {
             String url = ORDER_SERVICE_BASE_URL + "/" + orderId;
 
@@ -63,7 +63,7 @@ public class OrderServiceClient {
         }
     }
 
-    public OrderResponseModel createOrder(OrderRequestModel orderRequestModel) {
+    public OrderResponseModel createCustomerOrder(String customerId, OrderRequestModel orderRequestModel) {
         try {
             String url = ORDER_SERVICE_BASE_URL;
 
@@ -76,20 +76,20 @@ public class OrderServiceClient {
         }
     }
 
-    public OrderResponseModel updateOrder(String orderId, OrderRequestModel orderRequestModel) {
+    public OrderResponseModel updateCustomerOrder(String customerId, String orderId, OrderRequestModel orderRequestModel) {
         try {
             String url = ORDER_SERVICE_BASE_URL + "/" + orderId;
 
             restTemplate.put(url, orderRequestModel);
 
-            return getOrderByOrderId(orderId);
+            return getCustomerOrderByOrderId(customerId, orderId);
         }
         catch (HttpClientErrorException ex) {
             throw handleHttpClientException(ex);
         }
     }
 
-    public void deleteOrder(String orderId) {
+    public void deleteCustomerOrder(String customerId, String orderId) {
         try {
             String url = ORDER_SERVICE_BASE_URL + "/" + orderId;
 

@@ -23,27 +23,27 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<OrderResponseModel> getAllOrders() {
-        return orderResponseMapper.responseModelListToResponseModelList(orderServiceClient.getAllOrders());
+    public List<OrderResponseModel> getAllOrdersForCustomer(String customerId) {
+        return orderResponseMapper.responseModelListToResponseModelList(orderServiceClient.getAllOrdersForCustomer(customerId));
     }
 
     @Override
-    public OrderResponseModel getOrderByOrderId(String orderId) {
-        return orderResponseMapper.responseModelToResponseModel(orderServiceClient.getOrderByOrderId(orderId));
+    public OrderResponseModel getCustomerOrderByOrderId(String customerId, String orderId) {
+        return orderResponseMapper.responseModelToResponseModel(orderServiceClient.getCustomerOrderByOrderId(customerId,orderId));
     }
 
     @Override
-    public OrderResponseModel createOrder(OrderRequestModel orderRequestModel) {
-        return orderResponseMapper.responseModelToResponseModel(orderServiceClient.createOrder(orderRequestModel));
+    public OrderResponseModel createCustomerOrder(String customerId, OrderRequestModel orderRequestModel) {
+        return orderResponseMapper.responseModelToResponseModel(orderServiceClient.createCustomerOrder(customerId,orderRequestModel));
     }
 
     @Override
-    public OrderResponseModel updateOrder(String orderId, OrderRequestModel orderRequestModel) {
-        return orderResponseMapper.responseModelToResponseModel(orderServiceClient.updateOrder(orderId, orderRequestModel));
+    public OrderResponseModel updateCustomerOrder(String customerId, String orderId, OrderRequestModel orderRequestModel) {
+        return orderResponseMapper.responseModelToResponseModel(orderServiceClient.updateCustomerOrder(customerId,orderId, orderRequestModel));
     }
 
     @Override
-    public void deleteOrder(String orderId) {
-        orderServiceClient.deleteOrder(orderId);
+    public void deleteCustomerOrder(String customerId, String orderId) {
+        orderServiceClient.deleteCustomerOrder(customerId,orderId);
     }
 }

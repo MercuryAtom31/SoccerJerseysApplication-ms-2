@@ -7,8 +7,9 @@ import java.util.List;
 public interface OrderRepository extends JpaRepository<Order, String> {
 
 
-    Order findOrdersByCustomerModel_CustomerIdAndOrderIdentifier_OrderId(String customerId, String saleId);
-    List<Order> findOrderByCustomerModel_CustomerId(String customerId);
+    Order findOrderByCustomerIdentifier_CustomerIdAndOrderIdentifier_OrderId(String customerId, String orderId);
+    List<Order> findAllByCustomerIdentifier_CustomerId(String customerId);
+
 
 
     //OLD CODE

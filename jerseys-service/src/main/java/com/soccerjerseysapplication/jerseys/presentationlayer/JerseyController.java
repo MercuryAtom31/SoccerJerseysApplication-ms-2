@@ -34,7 +34,7 @@ public class JerseyController {
     }
 
     @PostMapping
-    public ResponseEntity<JerseyResponseModel> addJersey(@Valid @RequestBody JerseyRequestModel jerseyRequestModel) {
+    public ResponseEntity<JerseyResponseModel> addJersey(@RequestBody JerseyRequestModel jerseyRequestModel) {
         JerseyResponseModel createdJersey = jerseyService.addJersey(jerseyRequestModel);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdJersey);
     }

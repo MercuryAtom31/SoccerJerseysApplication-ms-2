@@ -39,7 +39,7 @@ public class OrderControllerTest {
         List<OrderResponseModel> orders = List.of(
                 new OrderResponseModel("customerName", "customerId", "orderId", "orderDate", 120.00, "teamId", "jerseyId", 60.00, "M", "Red", "Striped", "teamName")
         );
-        given(orderService.getAllOrders()).willReturn(orders);
+        given(orderService.getAllOrdersForCustomer(orders.get(0).getCustomerIdentifier())).willReturn(orders);
 
         mockMvc.perform(get("/api/v1/orders")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -50,7 +50,7 @@ public class OrderControllerTest {
     @Test
     void getOrderById_shouldReturnOrder() throws Exception {
         OrderResponseModel order = new OrderResponseModel("customerName", "customerId", "orderId", "orderDate", 120.00, "teamId", "jerseyId", 60.00, "M", "Red", "Striped", "teamName");
-        given(orderService.getOrderByOrderId("1")).willReturn(order);
+        given(orderService.getCustomerOrderByOrderId("2","1")).willReturn(order);
 
         mockMvc.perform(get("/api/v1/orders/1")
                         .contentType(MediaType.APPLICATION_JSON))
