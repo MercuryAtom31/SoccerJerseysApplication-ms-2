@@ -8,6 +8,7 @@ import com.soccerjerseysapplication.jerseys.mapperlayer.JerseyResponseMapper;
 import com.soccerjerseysapplication.jerseys.presentationlayer.JerseyRequestModel;
 import com.soccerjerseysapplication.jerseys.presentationlayer.JerseyResponseModel;
 import com.soccerjerseysapplication.jerseys.utils.exceptions.JerseyNotFoundException;
+import com.soccerjerseysapplication.jerseys.utils.exceptions.NotFoundException;
 import com.soccerjerseysapplication.jerseys.utils.exceptions.OutOfStockException;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
@@ -43,7 +44,7 @@ public class JerseyServiceImpl implements JerseyService {
             return jerseyResponseMapper.entityToResponseModel(jersey);
         } else {
             // Handle the case where jerseys is not found
-            return null;
+            throw new NotFoundException("Invalid jersey id: " + jerseyId);
         }
     }
 
@@ -57,7 +58,7 @@ public class JerseyServiceImpl implements JerseyService {
             return jerseyResponseMapper.entityToResponseModel(jerseyRepository.save(updatedJersey));
         } else {
             // Handle the case where jerseys is not found
-            return null;
+            throw new NotFoundException("Invalid jersey id: " + jerseyId);
         }
     }
 
@@ -75,7 +76,7 @@ public class JerseyServiceImpl implements JerseyService {
         if (jersey != null) {
             jerseyRepository.delete(jersey);
         } else {
-            // Handle the case where jerseys is not found
+            throw new NotFoundException("Invalid jersey id: " + jerseyId);
         }
     }
 

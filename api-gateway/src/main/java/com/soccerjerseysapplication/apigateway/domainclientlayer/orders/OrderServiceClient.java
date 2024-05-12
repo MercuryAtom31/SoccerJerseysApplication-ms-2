@@ -5,6 +5,7 @@ import com.soccerjerseysapplication.apigateway.presentationlayer.orders.OrderReq
 import com.soccerjerseysapplication.apigateway.presentationlayer.orders.OrderResponseModel;
 import com.soccerjerseysapplication.apigateway.utils.HttpErrorInfo;
 import com.soccerjerseysapplication.apigateway.utils.exceptions.InvalidInputException;
+import com.soccerjerseysapplication.apigateway.utils.exceptions.ItemUnavailableException;
 import com.soccerjerseysapplication.apigateway.utils.exceptions.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -52,7 +53,9 @@ public class OrderServiceClient {
 
     public OrderResponseModel getCustomerOrderByOrderId(String customerId, String orderId) {
         try {
-            String url = ORDER_SERVICE_BASE_URL + "/" + orderId;
+            //String url = ORDER_SERVICE_BASE_URL + "/" + orderId;
+            //String url = ORDER_SERVICE_BASE_URL + orderId;
+            String url = ORDER_SERVICE_BASE_URL + "/" + customerId + "/" + orderId;
 
             OrderResponseModel orderResponseModel = restTemplate.getForObject(url, OrderResponseModel.class);
 
@@ -65,7 +68,8 @@ public class OrderServiceClient {
 
     public OrderResponseModel createCustomerOrder(String customerId, OrderRequestModel orderRequestModel) {
         try {
-            String url = ORDER_SERVICE_BASE_URL;
+//            String url = ORDER_SERVICE_BASE_URL;
+            String url = ORDER_SERVICE_BASE_URL + customerId + "/orders";
 
             OrderResponseModel orderResponseModel = restTemplate.postForObject(url, orderRequestModel, OrderResponseModel.class);
 
@@ -78,7 +82,9 @@ public class OrderServiceClient {
 
     public OrderResponseModel updateCustomerOrder(String customerId, String orderId, OrderRequestModel orderRequestModel) {
         try {
-            String url = ORDER_SERVICE_BASE_URL + "/" + orderId;
+            //String url = ORDER_SERVICE_BASE_URL + "/" + orderId;
+            //String url = ORDER_SERVICE_BASE_URL + orderId;
+            String url = ORDER_SERVICE_BASE_URL + "/" + customerId + "/orders/" + orderId;
 
             restTemplate.put(url, orderRequestModel);
 
@@ -91,7 +97,9 @@ public class OrderServiceClient {
 
     public void deleteCustomerOrder(String customerId, String orderId) {
         try {
-            String url = ORDER_SERVICE_BASE_URL + "/" + orderId;
+            //String url = ORDER_SERVICE_BASE_URL + "/" + orderId;
+            //String url = ORDER_SERVICE_BASE_URL + orderId;
+            String url = ORDER_SERVICE_BASE_URL + "/" + customerId + "/orders/" + orderId;
 
             restTemplate.delete(url);
         }
@@ -107,10 +115,8 @@ public class OrderServiceClient {
             return new NotFoundException(getErrorMessage(ex));
         }
         if (ex.getStatusCode() == UNPROCESSABLE_ENTITY) {
-            return new InvalidInputException(getErrorMessage(ex));
+            return new ItemUnavailableException(getErrorMessage(ex));
         }
-        log.warn("Got an unexpected HTTP error: {}, will rethrow it", ex.getStatusCode());
-        log.warn("Error body: {}", ex.getResponseBodyAsString());
         return ex;
     }
 

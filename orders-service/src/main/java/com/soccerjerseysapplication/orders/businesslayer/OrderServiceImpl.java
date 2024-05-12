@@ -2,6 +2,7 @@ package com.soccerjerseysapplication.orders.businesslayer;
 
 
 import com.soccerjerseysapplication.customers.utils.exceptions.NotFoundException;
+import com.soccerjerseysapplication.orders.domainclientlayer.jerseys.JerseyRequestModel;
 import com.soccerjerseysapplication.orders.utils.exceptions.InvalidInputException;
 import com.soccerjerseysapplication.orders.dataaccesslayer.*;
 import com.soccerjerseysapplication.orders.domainclientlayer.customers.CustomerResponseModel;
@@ -131,14 +132,22 @@ public class OrderServiceImpl implements OrderService {
 
         // Retrieve the quantity requested by the user
         int quantityRequested = orderRequestModel.getQuantity();
-        if (foundJersey.getQuantity() < quantityRequested) {
+        if (quantityRequested > foundJersey.getQuantity()) {
             throw new ItemUnavailableException("Insufficient stock for Jersey ID: " + orderRequestModel.getJerseyIdentifier() +
                     ", Available: " + foundJersey.getQuantity() +
                     ", Requested: " + quantityRequested);
         }
 
+        JerseyRequestModel jerseyRequestModel = JerseyRequestModel.builder()
+                .price(foundJersey.getPrice())
+                .color(foundJersey.getColor())
+                .size(foundJersey.getSize())
+                .styles(foundJersey.getStyles())
+                .quantity(foundJersey.getQuantity() - quantityRequested)
+                .build();
+
         // Update jersey stock
-        jerseyServiceClient.updateJerseyQuantity(foundJersey.getJerseyId(), -quantityRequested);
+        jerseyServiceClient.updateJersey(foundJersey.getJerseyId(), jerseyRequestModel);
 
         // Convert request model to entity and save
         Order order = orderRequestMapper.requestModelToEntity(orderRequestModel, new OrderIdentifier());
@@ -201,22 +210,9 @@ public class OrderServiceImpl implements OrderService {
         if (foundOrder == null) {
             throw new NotFoundException("OrderId provided is unknown: " + orderId);
         }
-        Order updatedOrder = Order.builder()
-                .orderDate(foundOrder.getOrderDate())
-                .jerseyIdentifier(new JerseyIdentifier(orderRequestModel.getJerseyIdentifier()))
-                .teamIdentifier(new TeamIdentifier(orderRequestModel.getTeamIdentifier()))
-                .totalPriceOrder(foundOrder.getTotalPriceOrder())
-                .orderIdentifier(foundOrder.getOrderIdentifier())
-                .id(foundOrder.getId())
-                .build();
 
+        TeamResponseModel foundTeam = teamServiceClient.getTeamById(foundOrder.getTeamIdentifier().getTeamId());
 
-        TeamResponseModel teamResponseModel = teamServiceClient.getTeamById(foundOrder.getTeamIdentifier().getTeamId());
-
-        TeamResponseModel foundTeam = teamServiceClient.getTeamById(teamResponseModel.getTeamId());
-        if (foundTeam == null) {
-            throw new NotFoundException("TeamId is invalid: " + teamResponseModel.getTeamId());
-        }
 
         //Verify jersey exists
         JerseyResponseModel foundJersey = jerseyServiceClient.getJerseyById(orderRequestModel.getJerseyIdentifier());
@@ -224,11 +220,62 @@ public class OrderServiceImpl implements OrderService {
             throw new NotFoundException("JerseyId provided is invalid: " + orderRequestModel.getJerseyIdentifier());
         }
 
+        int quantity = 0;
+        //check if the order request model quantity is diff
+        if(orderRequestModel.getQuantity() != foundOrder.getQuantity()){
+            //check if the order request model asks for more jerseys
+            if(orderRequestModel.getQuantity() > foundOrder.getQuantity()){
+                //positive difference between the updated quantity and the quantity orginially ordered to check if the updated quantity is within the quantity left in the jersey service
+                int differenceInOrderQuantity = orderRequestModel.getQuantity() - foundOrder.getQuantity();
+                //check if the difference is larger than what is left in the found jersey to then throw an exception
+                if (differenceInOrderQuantity > foundJersey.getQuantity()) {
+                    throw new ItemUnavailableException("Insufficient stock for Jersey ID: " + orderRequestModel.getJerseyIdentifier() +
+                            ", Available: " + foundJersey.getQuantity() +
+                            ", Requested: " + differenceInOrderQuantity);
+                } else {
+                    quantity = orderRequestModel.getQuantity();
+                    //update the quantity in the jersey service
+                    JerseyRequestModel jerseyRequestModel = JerseyRequestModel.builder()
+                            .price(foundJersey.getPrice())
+                            .color(foundJersey.getColor())
+                            .size(foundJersey.getSize())
+                            .styles(foundJersey.getStyles())
+                            .quantity(foundJersey.getQuantity() - differenceInOrderQuantity)
+                            .build();
+                    jerseyServiceClient.updateJersey(foundJersey.getJerseyId(), jerseyRequestModel);
+                }
+            } else {
+                //else order request is asking for less jerseys so update jersey quantity in the jersey service
+                quantity = orderRequestModel.getQuantity();
+                int diffInQuantity = foundOrder.getQuantity() - orderRequestModel.getQuantity();
+                JerseyRequestModel jerseyRequestModel = JerseyRequestModel.builder()
+                        .price(foundJersey.getPrice())
+                        .color(foundJersey.getColor())
+                        .size(foundJersey.getSize())
+                        .styles(foundJersey.getStyles())
+                        .quantity(foundJersey.getQuantity() + diffInQuantity)
+                        .build();
+                jerseyServiceClient.updateJersey(foundJersey.getJerseyId(), jerseyRequestModel);
+
+            }
+        } else {
+            //if their is no change in quantity don't change the order quantity in the order entity and no need to update the jersey service
+            quantity = foundOrder.getQuantity();
+        }
+        Order updatedOrder = Order.builder()
+                .orderDate(foundOrder.getOrderDate())
+                .jerseyIdentifier(new JerseyIdentifier(orderRequestModel.getJerseyIdentifier()))
+                .teamIdentifier(new TeamIdentifier(orderRequestModel.getTeamIdentifier()))
+                .totalPriceOrder(foundOrder.getTotalPriceOrder())
+                .orderIdentifier(foundOrder.getOrderIdentifier())
+                .quantity(quantity)
+                .id(foundOrder.getId())
+                .build();
 
         Order savedOrder = orderRepository.save(updatedOrder);
         // need to change the status depending on the order
 
-        return orderResponseMapper.orderAndDetailsToOrderResponseModel(foundOrder, foundCustomer, foundJersey, foundTeam);
+        return orderResponseMapper.orderAndDetailsToOrderResponseModel(savedOrder, foundCustomer, foundJersey, foundTeam);
     }
 
     @Override

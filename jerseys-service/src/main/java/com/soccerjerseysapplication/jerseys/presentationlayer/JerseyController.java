@@ -50,6 +50,8 @@ public class JerseyController {
     public ResponseEntity<Void> deleteJersey(@PathVariable String jerseyId) {
         jerseyService.deleteJersey(jerseyId);
         return ResponseEntity.noContent().build();
+
+        //Throw a not found exception.
     }
 
 }

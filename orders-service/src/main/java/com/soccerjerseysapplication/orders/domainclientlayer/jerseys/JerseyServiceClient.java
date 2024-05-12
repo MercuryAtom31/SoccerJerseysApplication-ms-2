@@ -41,9 +41,13 @@ public class JerseyServiceClient {
 
     }
 
-    public void updateJerseyQuantity(String jerseyId, int quantityChange) {
-        String url = JERSEY_SERVICE_BASE_URL + "/adjust-stock/" + jerseyId;
-        restTemplate.postForObject(url, quantityChange, Void.class);
+    public void updateJersey(String jerseyId, JerseyRequestModel jerseyRequestModel) {
+        try {
+            String url = JERSEY_SERVICE_BASE_URL + "/"+ jerseyId;
+            restTemplate.put(url, jerseyRequestModel);
+        } catch(HttpClientErrorException ex){
+            throw handleHttpClientException(ex);
+        }
     }
 
 

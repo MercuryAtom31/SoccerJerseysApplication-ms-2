@@ -13,5 +13,5 @@ public class OrderRequestModel {
     String jerseyIdentifier;
 //    private String customerName;
 //    private String productName;
-//    private int quantity;
+    private int quantity;
 }

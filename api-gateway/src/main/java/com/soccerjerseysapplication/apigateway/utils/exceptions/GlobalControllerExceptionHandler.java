@@ -11,11 +11,17 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 
 import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
 
 @RestControllerAdvice
 @Slf4j
 public class GlobalControllerExceptionHandler {
 
+    @ResponseStatus(UNPROCESSABLE_ENTITY)
+    @ExceptionHandler(ItemUnavailableException.class)
+    public HttpErrorInfo handleItemUnavailableException(WebRequest request, Exception ex){
+        return createHttpErrorInfo(UNPROCESSABLE_ENTITY, request, ex);
+    }
 
     @ResponseStatus(NOT_FOUND)
     @ExceptionHandler(NotFoundException.class)

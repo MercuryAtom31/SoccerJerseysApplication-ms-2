@@ -42,8 +42,7 @@ public class TeamServiceImpl implements TeamService {
             return teamResponseMapper.entityToResponseModel(team);
         } else {
             // Handle the case where team is not found
-            return null;
-            //throw new NotFoundException("Unknown teamId provided " + teamId);
+            throw new NotFoundException("Unknown teamId provided " + teamId);
         }
     }
 
@@ -62,7 +61,7 @@ public class TeamServiceImpl implements TeamService {
             return teamResponseMapper.entityToResponseModel(teamRepository.save(updatedTeam));
         } else {
             // Handle the case where jerseys is not found
-            return null;
+            throw new NotFoundException("Unknown teamId: " + teamId);
         }
     }
 
