@@ -1,34 +1,17 @@
 @startuml
 !includeurl https://raw.githubusercontent.com/RicardoNiepel/C4-PlantUML/master/C4_Context.puml
 
-title System Context Diagram for Soccer Jerseys Ordering System
+title System Context Diagram for Soccer Jerseys E-Commerce System
 
-Person(customer, "Customer", "A customer looking to purchase soccer jerseys")
-Person(employee, "Employee", "Employee managing the jersey orders and inventory")
-System(orders_system, "Soccer Jerseys Ordering System", "Allows customers to order soccer jerseys and employees to manage the orders and inventory")
+'Type, name, "Name", "who they are"
+Person(customer, "Customer", "A customer of the Soccer Jerseys E-Commerce")
+Person(employee, "Employee", "Employee of the Soccer Jerseys E-Commerce")
+System(orders_system, "Soccer Jerseys E-Commerce System", "Allows customers to order soccer jerseys and employees to manage the orders and inventory")
 
-Rel(customer, orders_system, "Places orders using", "Web interface/API")
-Rel(employee, orders_system, "Manages orders and inventory", "Web interface/API")
+'name => in relationship with, "name", what they do, type of relationship.
+Rel(customer, orders_system, "Browses and Places orders using", "Uses")
+Rel(employee, orders_system, "Manages orders and inventory", "Uses")
 
-SHOW_LEGEND()
+'SHOW_LEGEND() Removed the legend in order to display the stereotypes (person and system).
 @enduml
 
-
-
-'@startuml C4_Container_Diagram
-'!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
-'
-'LAYOUT_WITH_LEGEND()
-'
-'Person(admin, "System Administrator", "Manages teams, jerseys, and players.")
-'Person(customer, "Customer", "Browses and purchases soccer jerseys.")
-'System(soccerJerseys, "SoccerJerseys Application", "A system for managing and purchasing soccer jerseys.")
-'
-'System_Ext(paymentGateway, "Payment Gateway", "External service for processing payments.")
-'
-'Rel(admin, soccerJerseys, "Uses")
-'Rel(customer, soccerJerseys, "Uses")
-'Rel(soccerJerseys, paymentGateway, "Interacts with")
-'
-'SHOW_LEGEND()
-'@enduml

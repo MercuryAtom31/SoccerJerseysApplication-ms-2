@@ -36,7 +36,7 @@ package "Soccer Jerseys Microservices Application" {
     }
 }
 
-note "Invariant: When an order is created and a jersey is requested, the inventory of the jersey must be checked and decremented accordingly. If the jersey's quantity is less than the requested amount, an ItemUnavailableException is thrown indicating insufficient stock." as Invariant1
+note "Invariant: When an order is created and a jersey is requested, the quantity of jerseys must be checked and decremented accordingly. If the jersey's quantity is less than the requested amount, an ItemUnavailableException is thrown indicating insufficient stock." as Invariant1
 [OrderService] .. Invariant1
 
 [OrderService] ..> [JerseyService] : validates inventory\nusing
