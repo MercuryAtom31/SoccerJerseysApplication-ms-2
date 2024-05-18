@@ -58,32 +58,3 @@ public class CustomerServiceClient {
         return ex;
     }
 }
-
-
-//package com.soccerjerseysapplication.orders.domainclientlayer.customers;
-//
-//import com.soccerjerseysapplication.orders.domainclientlayer.BaseServiceClient;
-//import lombok.extern.slf4j.Slf4j;
-//import org.springframework.beans.factory.annotation.Value;
-//import org.springframework.stereotype.Component;
-//import org.springframework.web.client.RestTemplate;
-//import com.fasterxml.jackson.databind.ObjectMapper;
-//
-//@Slf4j
-//@Component
-//public class CustomerServiceClient extends BaseServiceClient {
-//
-//    private final String customerServiceBaseUrl;
-//
-//    public CustomerServiceClient(RestTemplate restTemplate, ObjectMapper objectMapper,
-//                                 @Value("${app.customers-service.host}") String customerServiceHost,
-//                                 @Value("${app.customers-service.port}") String customerServicePort) {
-//        super(restTemplate, objectMapper);
-//        this.customerServiceBaseUrl = "http://" + customerServiceHost + ":" + customerServicePort + "/api/v1/customers";
-//    }
-//
-//    public CustomerResponseModel getCustomerById(String customerId) {
-//        String url = customerServiceBaseUrl + "/" + customerId;
-//        return getForObject(url, CustomerResponseModel.class);
-//    }
-//}

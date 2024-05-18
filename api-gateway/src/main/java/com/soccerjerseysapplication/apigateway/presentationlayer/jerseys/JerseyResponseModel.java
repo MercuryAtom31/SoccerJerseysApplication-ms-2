@@ -14,8 +14,6 @@ public class JerseyResponseModel extends RepresentationModel<JerseyResponseModel
     private String size;
     private String color;
     private String styles;
-    private Integer stockAmount;
+    private Integer quantity;
     private Double price;
-    private String customerName;
-    private String orderDate;
 }

@@ -55,7 +55,7 @@ public class OrderServiceClient {
         try {
             //String url = ORDER_SERVICE_BASE_URL + "/" + orderId;
             //String url = ORDER_SERVICE_BASE_URL + orderId;
-            String url = ORDER_SERVICE_BASE_URL + "/" + customerId + "/" + orderId;
+            String url = ORDER_SERVICE_BASE_URL + "/" + customerId + "/orders/" + orderId;
 
             OrderResponseModel orderResponseModel = restTemplate.getForObject(url, OrderResponseModel.class);
 

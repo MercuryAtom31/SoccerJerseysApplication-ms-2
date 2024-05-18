@@ -7,7 +7,7 @@ import java.util.List;
 public interface JerseyRepository extends JpaRepository<Jersey, Long> {
 
     // Find a jerseys by its identifier
-    Jersey findJerseyByJerseyIdentifier(String jerseyIdentifier);
+
 
     // Find jerseys by color
     List<Jersey> findJerseysByColor(String color);

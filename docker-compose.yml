@@ -56,8 +56,8 @@ services:
     build: orders-service
     hostname:  orders-service
     container_name: orders-service
-    ports:
-      - "8081:8080"
+#    ports:
+#      - "8081:8080"
     environment:
       - SPRING_PROFILES_ACTIVE=docker
     depends_on:
@@ -167,14 +167,35 @@ services:
       timeout: 5s
       retries: 10
 
+  mongo-express:
+    image: mongo-express
+    container_name: mongo-express
+    restart: always
+    ports:
+      - 8081:8081
+    environment:
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=user
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=pwd
+      - ME_CONFIG_MONGODB_SERVER=mongodb
+
+
+
+  phpmyadmin1:
+    image: phpmyadmin:5.2.0
+    container_name: phpmyadmin1
+    links:
+      - mysql1
+      - mysql2
+      - mysql3
+    restart: always
+    ports:
+      - 5013:80
+    environment:
+      - PMA_ARBITRARY=1
+
+
 volumes:
   mongo: {}
-
-
-
-
-
-
 
 #  mongodb:
 #    image: mongo
@@ -186,16 +207,7 @@ volumes:
 #    environment:
 #      - MONGO_INITDB_ROOT_USERNAME=user
 #      - MONGO_INITDB_ROOT_PASSWORD=pwd
-#  mongo-express:
-#    image: mongo-express
-#    container_name: mongo-express
-#    restart: always
-#    ports:
-#      - 8081:8081
-#    environment:
-#      - ME_CONFIG_MONGODB_ADMINUSERNAME=user
-#      - ME_CONFIG_MONGODB_ADMINPASSWORD=pwd
-#      - ME_CONFIG_MONGODB_SERVER=mongodb
+
 #volumes:
 #  mongo: {}
 
@@ -374,16 +386,7 @@ volumes:
 #  #      timeout: 5s
 #  #      retries: 10
 #
-#  phpmyadmin1:
-#    image: phpmyadmin:5.2.0
-#    container_name: phpmyadmin1
-#    links:
-#      - mysql1
-#    restart: always
-#    ports:
-#      - 5013:80
-#    environment:
-#      - PMA_ARBITRARY=1
+
 #
 ##  phpmyadmin2:
 ##    image: phpmyadmin:5.2.0

@@ -38,7 +38,6 @@ public class JerseyServiceClient {
         } catch(HttpClientErrorException ex){
             throw handleHttpClientException(ex);
         }
-
     }
 
     public void updateJersey(String jerseyId, JerseyRequestModel jerseyRequestModel) {

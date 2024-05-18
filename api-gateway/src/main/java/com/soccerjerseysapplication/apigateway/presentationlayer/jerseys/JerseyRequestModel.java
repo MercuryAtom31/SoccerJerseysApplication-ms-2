@@ -14,6 +14,6 @@ public class JerseyRequestModel {
     private String size;
     private String color;
     private String styles;
-    private Integer stockAmount;
+    private Integer quantity;
     private Double price;
 }

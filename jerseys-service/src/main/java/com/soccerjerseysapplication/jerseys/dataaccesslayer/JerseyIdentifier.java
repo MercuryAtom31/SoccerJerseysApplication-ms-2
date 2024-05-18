@@ -2,6 +2,7 @@ package com.soccerjerseysapplication.jerseys.dataaccesslayer;
 
 import jakarta.persistence.Embeddable;
 import lombok.Getter;
+import org.hibernate.validator.constraints.UniqueElements;
 
 import java.util.UUID;
 
@@ -9,6 +10,7 @@ import java.util.UUID;
 @Getter
 public class JerseyIdentifier {
 
+    @UniqueElements
     private String jerseyId;
 
     public JerseyIdentifier() {

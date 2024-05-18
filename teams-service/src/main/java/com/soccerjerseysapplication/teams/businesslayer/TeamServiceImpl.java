@@ -58,6 +58,7 @@ public class TeamServiceImpl implements TeamService {
         if (existingTeam != null) {
             Team updatedTeam = teamRequestMapper.requestModelToEntity(
                     teamRequestModel, existingTeam.getTeamIdentifier());
+            updatedTeam.setId(existingTeam.getId());
             return teamResponseMapper.entityToResponseModel(teamRepository.save(updatedTeam));
         } else {
             // Handle the case where jerseys is not found

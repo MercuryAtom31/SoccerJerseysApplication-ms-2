@@ -55,6 +55,7 @@ public class JerseyServiceImpl implements JerseyService {
         if (existingJersey != null) {
             Jersey updatedJersey = jerseyRequestMapper.requestModelToEntity(
                     jerseyRequestModel, existingJersey.getJerseyIdentifier());
+            updatedJersey.setId(existingJersey.getId());//Added code.
             return jerseyResponseMapper.entityToResponseModel(jerseyRepository.save(updatedJersey));
         } else {
             // Handle the case where jerseys is not found
