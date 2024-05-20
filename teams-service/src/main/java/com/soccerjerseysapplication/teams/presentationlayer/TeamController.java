@@ -38,8 +38,8 @@ public class TeamController {
         return new ResponseEntity<>(teamResponseModel, HttpStatus.OK);
     }
 
-    @PostMapping("/teams")
-    public ResponseEntity<TeamResponseModel> addTeam(@PathVariable String teamId, @RequestBody TeamRequestModel teamRequestModel) {
+    @PostMapping
+    public ResponseEntity<TeamResponseModel> addTeam(@RequestBody TeamRequestModel teamRequestModel) {
         TeamResponseModel createdTeam = teamService.addTeam(teamRequestModel);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdTeam);
     }

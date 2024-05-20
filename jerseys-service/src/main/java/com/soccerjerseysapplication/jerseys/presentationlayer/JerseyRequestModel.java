@@ -10,16 +10,12 @@ public class JerseyRequestModel {
 
     @NotNull
     private String size;
-
     @NotNull
     private String color;
-
     @NotNull
     private String styles;
-
     @NotNull
     private Integer quantity;
-
     @NotNull
     private Double price;
 }

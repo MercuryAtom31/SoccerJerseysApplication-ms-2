@@ -180,6 +180,7 @@ services:
 
 
 
+
   phpmyadmin1:
     image: phpmyadmin:5.2.0
     container_name: phpmyadmin1

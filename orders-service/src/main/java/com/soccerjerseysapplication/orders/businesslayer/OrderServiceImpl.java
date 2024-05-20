@@ -109,6 +109,61 @@ public class OrderServiceImpl implements OrderService {
         return orderResponseMapper.orderAndDetailsToOrderResponseModel(foundOrder, foundCustomer, foundJersey, foundTeam);
     }
 
+//    @Override
+//    public OrderResponseModel createCustomerOrder(String customerId, OrderRequestModel orderRequestModel) {
+//
+//        // Verify customer exists
+//        CustomerResponseModel foundCustomer = customerServiceClient.getCustomerByCustomerId(customerId);
+//        if (foundCustomer == null) {
+//            throw new NotFoundException("CustomerId provided is invalid: " + customerId);
+//        }
+//
+//        // Verify jersey exists
+//        JerseyResponseModel foundJersey = jerseyServiceClient.getJerseyById(orderRequestModel.getJerseyIdentifier());
+//        if (foundJersey == null) {
+//            throw new NotFoundException("JerseyId provided is invalid: " + orderRequestModel.getJerseyIdentifier());
+//        }
+//
+//        // Verify team exists
+//        TeamResponseModel foundTeam = teamServiceClient.getTeamById(orderRequestModel.getTeamIdentifier());
+//        if (foundTeam == null) {
+//            throw new NotFoundException("TeamId is invalid: " + orderRequestModel.getTeamIdentifier());
+//        }
+//
+//        // Retrieve the quantity requested by the user
+//        int quantityRequested = orderRequestModel.getQuantity();
+//        if (quantityRequested > foundJersey.getQuantity()) {
+//            throw new ItemUnavailableException("Insufficient stock for Jersey ID: " + orderRequestModel.getJerseyIdentifier() +
+//                    ", Available: " + foundJersey.getQuantity() +
+//                    ", Requested: " + quantityRequested);
+//        }
+//
+//        JerseyRequestModel jerseyRequestModel = JerseyRequestModel.builder()
+//                .price(foundJersey.getPrice())
+//                .color(foundJersey.getColor())
+//                .size(foundJersey.getSize())
+//                .styles(foundJersey.getStyles())
+//                .quantity(foundJersey.getQuantity() - quantityRequested)
+//                .build();
+//
+//        // Update jersey stock
+//        jerseyServiceClient.updateJersey(foundJersey.getJerseyId(), jerseyRequestModel);
+//
+//        // Convert request model to entity and save
+//        CustomerIdentifier customerIdentifier = new CustomerIdentifier(customerId);
+//        JerseyIdentifier jerseyIdentifier = new JerseyIdentifier(orderRequestModel.getJerseyIdentifier());
+//        TeamIdentifier teamIdentifier = new TeamIdentifier(orderRequestModel.getTeamIdentifier());
+//
+//        Order order = orderRequestMapper.requestModelToEntity(orderRequestModel, customerIdentifier, jerseyIdentifier, teamIdentifier);
+//        order.setOrderDate(new Date().toString());
+//        double jerseyPrice = jerseyRequestModel.getPrice();
+//        double total = jerseyPrice * order.getQuantity();
+//        order.setTotalPriceOrder(total);
+//        Order savedOrder = orderRepository.save(order);
+//
+//        // Convert entity to response model
+//        return orderResponseMapper.orderAndDetailsToOrderResponseModel(savedOrder, foundCustomer, foundJersey, foundTeam);
+//    }
     @Override
     public OrderResponseModel createCustomerOrder(String customerId, OrderRequestModel orderRequestModel) {
 
@@ -162,6 +217,86 @@ public class OrderServiceImpl implements OrderService {
         return orderResponseMapper.orderAndDetailsToOrderResponseModel(savedOrder, foundCustomer, foundJersey, foundTeam);
     }
 
+//    @Override
+//    public OrderResponseModel updateCustomerOrder(String customerId, String orderId, OrderRequestModel orderRequestModel) {
+//
+//        // Verify customer exists
+//        CustomerResponseModel foundCustomer = customerServiceClient.getCustomerByCustomerId(customerId);
+//        if (foundCustomer == null) {
+//            throw new InvalidInputException("CustomerId provided is invalid: " + customerId);
+//        }
+//
+//        // Verify that the orderId is valid
+//        Order foundOrder = orderRepository.findOrderByCustomerIdentifier_CustomerIdAndOrderIdentifier_OrderId(customerId, orderId);
+//        if (foundOrder == null) {
+//            throw new NotFoundException("OrderId provided is unknown: " + orderId);
+//        }
+//
+//        TeamResponseModel foundTeam = teamServiceClient.getTeamById(foundOrder.getTeamIdentifier().getTeamId());
+//
+//        // Verify jersey exists
+//        JerseyResponseModel foundJersey = jerseyServiceClient.getJerseyById(orderRequestModel.getJerseyIdentifier());
+//        if (foundJersey == null) {
+//            throw new NotFoundException("JerseyId provided is invalid: " + orderRequestModel.getJerseyIdentifier());
+//        }
+//
+//        int quantity = 0;
+//        // Check if the order request model quantity is different
+//        if(orderRequestModel.getQuantity() != foundOrder.getQuantity()){
+//            // Check if the order request model asks for more jerseys
+//            if(orderRequestModel.getQuantity() > foundOrder.getQuantity()){
+//                // Positive difference between the updated quantity and the quantity originally ordered to check if the updated quantity is within the quantity left in the jersey service
+//                int differenceInOrderQuantity = orderRequestModel.getQuantity() - foundOrder.getQuantity();
+//                // Check if the difference is larger than what is left in the found jersey to then throw an exception
+//                if (differenceInOrderQuantity > foundJersey.getQuantity()) {
+//                    throw new ItemUnavailableException("Insufficient stock for Jersey ID: " + orderRequestModel.getJerseyIdentifier() +
+//                            ", Available: " + foundJersey.getQuantity() +
+//                            ", Requested: " + differenceInOrderQuantity);
+//                } else {
+//                    quantity = orderRequestModel.getQuantity();
+//                    // Update the quantity in the jersey service
+//                    JerseyRequestModel jerseyRequestModel = JerseyRequestModel.builder()
+//                            .price(foundJersey.getPrice())
+//                            .color(foundJersey.getColor())
+//                            .size(foundJersey.getSize())
+//                            .styles(foundJersey.getStyles())
+//                            .quantity(foundJersey.getQuantity() - differenceInOrderQuantity)
+//                            .build();
+//                    jerseyServiceClient.updateJersey(foundJersey.getJerseyId(), jerseyRequestModel);
+//                }
+//            } else {
+//                // Else order request is asking for fewer jerseys so update jersey quantity in the jersey service
+//                quantity = orderRequestModel.getQuantity();
+//                int diffInQuantity = foundOrder.getQuantity() - orderRequestModel.getQuantity();
+//                JerseyRequestModel jerseyRequestModel = JerseyRequestModel.builder()
+//                        .price(foundJersey.getPrice())
+//                        .color(foundJersey.getColor())
+//                        .size(foundJersey.getSize())
+//                        .styles(foundJersey.getStyles())
+//                        .quantity(foundJersey.getQuantity() + diffInQuantity)
+//                        .build();
+//                jerseyServiceClient.updateJersey(foundJersey.getJerseyId(), jerseyRequestModel);
+//            }
+//        } else {
+//            // If there is no change in quantity, don't change the order quantity in the order entity and no need to update the jersey service
+//            quantity = foundOrder.getQuantity();
+//        }
+//
+//        CustomerIdentifier customerIdentifier = new CustomerIdentifier(customerId);
+//        JerseyIdentifier jerseyIdentifier = new JerseyIdentifier(orderRequestModel.getJerseyIdentifier());
+//        TeamIdentifier teamIdentifier = new TeamIdentifier(orderRequestModel.getTeamIdentifier());
+//
+//        Order updatedOrder = orderRequestMapper.requestModelToEntity(orderRequestModel, customerIdentifier, jerseyIdentifier, teamIdentifier);
+//        updatedOrder.setId(foundOrder.getId());
+//        updatedOrder.setOrderDate(foundOrder.getOrderDate());
+//        updatedOrder.setTotalPriceOrder(foundOrder.getTotalPriceOrder());
+//        updatedOrder.setQuantity(quantity);
+//
+//        Order savedOrder = orderRepository.save(updatedOrder);
+//        // Need to change the status depending on the order
+//
+//        return orderResponseMapper.orderAndDetailsToOrderResponseModel(savedOrder, foundCustomer, foundJersey, foundTeam);
+//    }
     @Override
     public OrderResponseModel updateCustomerOrder(String customerId, String orderId, OrderRequestModel orderRequestModel) {
 
@@ -236,6 +371,7 @@ public class OrderServiceImpl implements OrderService {
                 .teamIdentifier(new TeamIdentifier(orderRequestModel.getTeamIdentifier()))
                 .totalPriceOrder(foundOrder.getTotalPriceOrder())
                 .orderIdentifier(foundOrder.getOrderIdentifier())
+                .customerIdentifier(foundOrder.getCustomerIdentifier())
                 .quantity(quantity)
                 .id(foundOrder.getId())
                 .build();

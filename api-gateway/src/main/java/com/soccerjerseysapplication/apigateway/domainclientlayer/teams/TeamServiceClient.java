@@ -53,7 +53,6 @@ public class TeamServiceClient {
     public TeamResponseModel getTeamByTeamId(String teamId) {
         try {
             String url = TEAM_SERVICE_BASE_URL + "/" + teamId;
-
             TeamResponseModel teamResponseModel = restTemplate.getForObject(url, TeamResponseModel.class);
 
             return teamResponseModel;

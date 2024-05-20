@@ -48,7 +48,7 @@ public class TeamController {
             consumes = "application/json",
             produces = "application/json")
     public ResponseEntity<TeamResponseModel> createTeam(@RequestBody TeamRequestModel teamRequestModel) {
-        return ResponseEntity.ok().body(teamService.createTeam(teamRequestModel));
+        return ResponseEntity.status(HttpStatus.CREATED).body(teamService.createTeam(teamRequestModel));
     }
 
     @PutMapping(

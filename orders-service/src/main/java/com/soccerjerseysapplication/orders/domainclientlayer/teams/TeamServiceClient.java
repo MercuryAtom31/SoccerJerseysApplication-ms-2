@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.soccerjerseysapplication.customers.utils.exceptions.NotFoundException;
 import com.soccerjerseysapplication.orders.utils.HttpErrorInfo;
+import com.soccerjerseysapplication.orders.utils.exceptions.InvalidInputException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -15,6 +16,7 @@ import org.springframework.web.client.RestTemplate;
 import java.io.IOException;
 
 import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
 
 @Slf4j
 @Component
@@ -51,39 +53,24 @@ public class TeamServiceClient {
             return ioex.getMessage();
         }
     }
-    private RuntimeException handleHttpClientException(HttpClientErrorException ex){
-        //Adding all the exceptions that the service throws
-        if (ex.getStatusCode() == NOT_FOUND)
+
+    public RuntimeException handleHttpClientException(HttpClientErrorException ex) {
+
+        //include all possible responses from the client
+        if (ex.getStatusCode() == NOT_FOUND) {
             return new NotFoundException(getErrorMessage(ex));
+        }
+        if (ex.getStatusCode() == UNPROCESSABLE_ENTITY) {
+            return new InvalidInputException(getErrorMessage(ex));
+        }
+        log.warn("Got an unexpected HTTP error: {}, will rethrow it", ex.getStatusCode());
+        log.warn("Error body: {}", ex.getResponseBodyAsString());
         return ex;
     }
+//    private RuntimeException handleHttpClientException(HttpClientErrorException ex){
+//        //Adding all the exceptions that the service throws
+//        if (ex.getStatusCode() == NOT_FOUND)
+//            return new NotFoundException(getErrorMessage(ex));
+//        return ex;
+//    }
 }
-
-
-//package com.soccerjerseysapplication.orders.domainclientlayer.teams;
-//
-//import com.soccerjerseysapplication.orders.domainclientlayer.BaseServiceClient;
-//import lombok.extern.slf4j.Slf4j;
-//import org.springframework.beans.factory.annotation.Value;
-//import org.springframework.stereotype.Component;
-//import org.springframework.web.client.RestTemplate;
-//import com.fasterxml.jackson.databind.ObjectMapper;
-//
-//@Slf4j
-//@Component
-//public class TeamServiceClient extends BaseServiceClient {
-//
-//    private final String teamServiceBaseUrl;
-//
-//    public TeamServiceClient(RestTemplate restTemplate, ObjectMapper objectMapper,
-//                             @Value("${app.team-service.host}") String teamServiceHost,
-//                             @Value("${app.team-service.port}") String teamServicePort) {
-//        super(restTemplate, objectMapper);
-//        this.teamServiceBaseUrl = "http://" + teamServiceHost + ":" + teamServicePort + "/api/v1/teams";
-//    }
-//
-//    public TeamResponseModel getTeamById(String teamId) {
-//        String url = teamServiceBaseUrl + "/" + teamId;
-//        return getForObject(url, TeamResponseModel.class);
-//    }
-//}

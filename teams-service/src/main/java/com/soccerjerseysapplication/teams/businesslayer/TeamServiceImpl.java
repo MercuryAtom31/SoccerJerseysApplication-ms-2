@@ -9,8 +9,10 @@ import com.soccerjerseysapplication.teams.dataaccesslayer.TeamRepository;
 import com.soccerjerseysapplication.teams.mapperlayer.TeamResponseMapper;
 import com.soccerjerseysapplication.teams.presentationlayer.TeamRequestModel;
 import com.soccerjerseysapplication.teams.presentationlayer.TeamResponseModel;
+import com.soccerjerseysapplication.teams.utils.exceptions.MethodNotAllowedException;
 import com.soccerjerseysapplication.teams.utils.exceptions.NotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -48,23 +50,65 @@ public class TeamServiceImpl implements TeamService {
 
     @Override
     public TeamResponseModel addTeam(TeamRequestModel teamRequestModel) {
-        Team team = teamRequestMapper.requestModelToEntity(teamRequestModel, new TeamIdentifier());
-        return teamResponseMapper.entityToResponseModel(teamRepository.save(team));
+        try {
+            TeamIdentifier teamIdentifier = new TeamIdentifier(); // Ensure it's properly initialized
+            Team team = teamRequestMapper.requestModelToEntity(teamRequestModel, teamIdentifier);
+            return teamResponseMapper.entityToResponseModel(teamRepository.save(team));
+        } catch (DataAccessException ex) {
+            if (ex.getMessage().contains("Method not allowed condition")) {
+                throw new MethodNotAllowedException("POST method is not allowed for this operation.");
+            }
+            throw ex;
+        }
     }
+
+//    @Override
+//    public TeamResponseModel addTeam(TeamRequestModel teamRequestModel) {
+//        Team team = teamRequestMapper.requestModelToEntity(teamRequestModel, new TeamIdentifier());
+//        //  try {
+//        return teamResponseMapper.entityToResponseModel(teamRepository.save(team));
+//        // } catch(DataAccessException ex){ //might throw diffrent exception
+//        //if(ex.getMessage().contains(""))
+//        //   throw new RuntimeException();
+//        //}
+//    }
 
     @Override
     public TeamResponseModel updateTeam(String teamId, TeamRequestModel teamRequestModel) {
         Team existingTeam = teamRepository.findByTeamIdentifier_TeamId(teamId);
         if (existingTeam != null) {
-            Team updatedTeam = teamRequestMapper.requestModelToEntity(
-                    teamRequestModel, existingTeam.getTeamIdentifier());
-            updatedTeam.setId(existingTeam.getId());
-            return teamResponseMapper.entityToResponseModel(teamRepository.save(updatedTeam));
+            try {
+                TeamIdentifier teamIdentifier = existingTeam.getTeamIdentifier();
+                if (teamIdentifier == null) {
+                    teamIdentifier = new TeamIdentifier(teamId);
+                }
+                Team updatedTeam = teamRequestMapper.requestModelToEntity(teamRequestModel, teamIdentifier);
+                updatedTeam.setId(existingTeam.getId());
+                return teamResponseMapper.entityToResponseModel(teamRepository.save(updatedTeam));
+            } catch (DataAccessException ex) {
+                if (ex.getMessage().contains("Method not allowed condition")) {
+                    throw new MethodNotAllowedException("PUT method is not allowed for this operation.");
+                }
+                throw ex;
+            }
         } else {
-            // Handle the case where jerseys is not found
             throw new NotFoundException("Unknown teamId: " + teamId);
         }
     }
+
+//    @Override
+//    public TeamResponseModel updateTeam(String teamId, TeamRequestModel teamRequestModel) {
+//        Team existingTeam = teamRepository.findByTeamIdentifier_TeamId(teamId);
+//        if (existingTeam != null) {
+//            Team updatedTeam = teamRequestMapper.requestModelToEntity(
+//                    teamRequestModel, existingTeam.getTeamIdentifier());
+//            updatedTeam.setId(existingTeam.getId());
+//            return teamResponseMapper.entityToResponseModel(teamRepository.save(updatedTeam));
+//        } else {
+//            // Handle the case where jerseys is not found
+//            throw new NotFoundException("Unknown teamId: " + teamId);
+//        }
+//    }
 
     @Override
     public void deleteTeam(String teamId) {

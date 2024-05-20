@@ -1,9 +1,6 @@
 package com.soccerjerseysapplication.orders.mapperlayer;
 
-import com.soccerjerseysapplication.orders.dataaccesslayer.JerseyIdentifier;
-import com.soccerjerseysapplication.orders.dataaccesslayer.Order;
-import com.soccerjerseysapplication.orders.dataaccesslayer.OrderIdentifier;
-import com.soccerjerseysapplication.orders.dataaccesslayer.TeamIdentifier;
+import com.soccerjerseysapplication.orders.dataaccesslayer.*;
 import com.soccerjerseysapplication.orders.presentationlayer.OrderRequestModel;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -12,6 +9,17 @@ import org.mapstruct.Mappings;
 @Mapper(componentModel = "spring")
 public interface OrderRequestMapper {
 
+//    @Mappings({
+//            @Mapping(target = "id", ignore = true),
+//            @Mapping(target = "orderIdentifier", ignore = true),
+//            @Mapping(target = "customerIdentifier", source = "customerIdentifier"),
+//            @Mapping(target = "jerseyIdentifier", source = "jerseyIdentifier"),
+//            @Mapping(target = "teamIdentifier", source = "teamIdentifier")
+//    })
+//    Order requestModelToEntity(OrderRequestModel requestModel,
+//                               CustomerIdentifier customerIdentifier,
+//                               JerseyIdentifier jerseyIdentifier,
+//                               TeamIdentifier teamIdentifier);
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "orderDate", ignore = true)
     @Mapping(target = "customerIdentifier", ignore = true)

@@ -1,5 +1,6 @@
-package com.soccerjerseysapplication.customers.utils;
+package com.soccerjerseysapplication.customers.utils.exceptions;
 
+import com.soccerjerseysapplication.customers.utils.HttpErrorInfo;
 import com.soccerjerseysapplication.customers.utils.exceptions.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 
 import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
 
 /**
  * @author Christine Gerard
@@ -26,6 +28,14 @@ public class GlobalControllerExceptionHandler {
     public HttpErrorInfo handleNotFoundException(WebRequest request, Exception ex) {
         return createHttpErrorInfo(NOT_FOUND, request, ex);
     }
+
+    //
+    @ResponseStatus(UNPROCESSABLE_ENTITY)
+    @ExceptionHandler(com.soccerjerseysapplication.utils.exceptions.InvalidInputException.class)
+    public HttpErrorInfo handleInvalidInputException(WebRequest request, Exception ex) {
+        return createHttpErrorInfo(UNPROCESSABLE_ENTITY, request, ex);
+    }
+    //
 
     private HttpErrorInfo createHttpErrorInfo(HttpStatus httpStatus, WebRequest request, Exception ex) {
         final String path = request.getDescription(false);

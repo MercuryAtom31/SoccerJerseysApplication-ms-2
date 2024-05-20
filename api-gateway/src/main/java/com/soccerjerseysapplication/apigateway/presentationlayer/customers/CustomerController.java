@@ -2,6 +2,7 @@ package com.soccerjerseysapplication.apigateway.presentationlayer.customers;
 
 import com.soccerjerseysapplication.apigateway.businesslayer.customers.CustomerService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -41,7 +42,7 @@ public class CustomerController {
             consumes = "application/json",
             produces = "application/json")
     public ResponseEntity<CustomerResponseModel> createCustomer(@RequestBody CustomerRequestModel customerRequestModel) {
-        return ResponseEntity.ok().body(customerService.createCustomer(customerRequestModel));
+        return ResponseEntity.status(HttpStatus.CREATED).body(customerService.createCustomer(customerRequestModel));
     }
 
     @PutMapping(

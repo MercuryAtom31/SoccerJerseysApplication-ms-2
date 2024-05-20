@@ -47,7 +47,7 @@ public class OrderController {
             produces = "application/json")
     public ResponseEntity<OrderResponseModel> createCustomerOrder(@PathVariable String customerId,
                                                                   @RequestBody OrderRequestModel orderRequestModel) {
-        return ResponseEntity.ok().body(orderService.createCustomerOrder(customerId, orderRequestModel));
+        return ResponseEntity.status(HttpStatus.CREATED).body(orderService.createCustomerOrder(customerId, orderRequestModel));
     }
 
     @PutMapping(

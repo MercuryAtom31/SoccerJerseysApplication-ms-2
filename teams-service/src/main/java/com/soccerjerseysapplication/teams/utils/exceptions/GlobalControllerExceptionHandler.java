@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 
-import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.*;
 
 /**
  * @author Christine Gerard
@@ -27,6 +27,25 @@ public class GlobalControllerExceptionHandler {
     public HttpErrorInfo handleNotFoundException(WebRequest request, Exception ex) {
         return createHttpErrorInfo(NOT_FOUND, request, ex);
     }
+
+    //
+    @ResponseStatus(UNPROCESSABLE_ENTITY)
+    @ExceptionHandler(InvalidInputException.class)
+    public HttpErrorInfo handleInvalidInputException(WebRequest request, Exception ex) {
+        return createHttpErrorInfo(UNPROCESSABLE_ENTITY, request, ex);
+    }
+
+    @ResponseStatus(METHOD_NOT_ALLOWED)
+    @ExceptionHandler(MethodNotAllowedException.class)
+    public HttpErrorInfo handleMethodNotAllowedException(WebRequest request, Exception ex){
+        return createHttpErrorInfo(METHOD_NOT_ALLOWED, request, ex);
+    }
+//
+//    @ResponseStatus(BAD_REQUEST)
+//    @ExceptionHandler(DuplicateTeamNameException.class)
+//    public HttpErrorInfo handleDuplicateTeamNameException(WebRequest request, Exception ex) {
+//        return createHttpErrorInfo(BAD_REQUEST, request, ex);
+//    }
 
     private HttpErrorInfo createHttpErrorInfo(HttpStatus httpStatus, WebRequest request, Exception ex) {
         final String path = request.getDescription(false);

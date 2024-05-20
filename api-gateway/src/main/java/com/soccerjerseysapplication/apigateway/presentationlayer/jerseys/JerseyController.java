@@ -46,7 +46,7 @@ public class JerseyController {
             consumes = "application/json",
             produces = "application/json")
     public ResponseEntity<JerseyResponseModel> createJersey(@RequestBody JerseyRequestModel jerseyRequestModel) {
-        return ResponseEntity.ok().body(jerseyService.createJersey(jerseyRequestModel));
+        return ResponseEntity.status(HttpStatus.CREATED).body(jerseyService.createJersey(jerseyRequestModel));
     }
 
     @PutMapping(
